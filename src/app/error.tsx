@@ -4,7 +4,12 @@ import Header from "@/components/Header";
 import Button from "@/ui/Button";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
-function Error({ error, reset }) {
+interface ErrorProps {
+  error: Error & { digest?: string };
+  reset: () => void;
+}
+
+function Error({ error, reset }: ErrorProps) {
   return (
     <div className="h-screen">
       <Header />

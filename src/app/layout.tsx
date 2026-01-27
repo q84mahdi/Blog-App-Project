@@ -1,6 +1,7 @@
+import "@/styles/globals.css";
 import vazirFont from "@/constants/localFont";
 import AppProviders from "@/providers/AppProviders";
-import "@/styles/globals.css";
+import { ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 
 export const metadata = {
@@ -11,7 +12,7 @@ export const metadata = {
   description: "وب اپلیکیشن مدیریت بلاگ ها و نظرات کاربران",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fa" dir="rtl">
       <body
