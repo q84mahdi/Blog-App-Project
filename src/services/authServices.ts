@@ -1,15 +1,18 @@
 import { AxiosRequestConfig } from "axios";
-import http, { ApiResponse } from "./httpServices";
+import http from "./httpServices";
+import {
+  ApiResponse,
+  EmptyResponse,
+  PaginatedResponse,
+} from "@/types/globalTypes";
 import {
   SignupRequest,
   SigninRequest,
   AuthResponse,
   User,
   UpdateProfileRequest,
-  PaginatedResponse,
   UserPost,
   UserComment,
-  UpdateProfileResponse,
   LogoutResponse,
 } from "@/types/authTypes";
 
@@ -82,8 +85,8 @@ export const getUserCommentsApi = async (
 
 export const updateUserAvatar = async (
   data: FormData,
-): Promise<UpdateProfileResponse> => {
-  const res = await http.post<ApiResponse<UpdateProfileResponse>, FormData>(
+): Promise<EmptyResponse> => {
+  const res = await http.post<ApiResponse<EmptyResponse>, FormData>(
     "/user/upload-avatar",
     data,
   );
@@ -92,9 +95,9 @@ export const updateUserAvatar = async (
 
 export const updateUserProfile = async (
   data: UpdateProfileRequest,
-): Promise<UpdateProfileResponse> => {
+): Promise<EmptyResponse> => {
   const res = await http.patch<
-    ApiResponse<UpdateProfileResponse>,
+    ApiResponse<EmptyResponse>,
     UpdateProfileRequest
   >("/user/update", data);
   return res.data.data;

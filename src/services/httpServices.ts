@@ -98,10 +98,4 @@ const http: HttpClient = {
   delete: (url, config) => app.delete(url, config),
 };
 
-// ApiResponse type
-export interface ApiResponse<T> {
-  statusCode: number;
-  data: T;
-}
-
 export default http;

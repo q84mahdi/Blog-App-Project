@@ -94,15 +94,3 @@ export interface UpdateProfileRequest {
   name: string;
   email: string;
 }
-
-export interface UpdateProfileResponse {
-  message: string;
-}
-
-export interface PaginatedResponse<T> {
-  data: T[];
-  dataCount: number;
-  total: number;
-  page: number;
-  limit: number;
-}
