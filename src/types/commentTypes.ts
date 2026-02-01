@@ -7,7 +7,7 @@ import { Post } from "./postTypes";
 export type CommentStatus = 0 | 1 | 2;
 
 export interface CreateCommentRequest {
-  parentId?: number;
+  parentId?: string;
   postId: string;
   text: string;
 }
