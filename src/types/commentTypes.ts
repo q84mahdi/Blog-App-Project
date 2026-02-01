@@ -1,6 +1,10 @@
+import { User } from "./authTypes";
 import { PaginatedResponse } from "./globalTypes";
+import { Post } from "./postTypes";
 
 /* ---------- Comment ---------- */
+
+export type CommentStatus = 0 | 1 | 2;
 
 export interface CreateCommentRequest {
   parentId?: number;
@@ -9,7 +13,7 @@ export interface CreateCommentRequest {
 }
 
 export interface ChangeStatusCommentRequest {
-  status: 0 | 1 | 2;
+  status: CommentStatus;
 }
 
 export type GetAllCommentsResponse = PaginatedResponse<Comment> & {
@@ -18,13 +22,9 @@ export type GetAllCommentsResponse = PaginatedResponse<Comment> & {
 
 export interface AnswerComment {
   content: { text: string };
-  user: {
-    _id: string;
-    name: string;
-    avatarUrl: string | null;
-  };
+  user: Pick<User, "_id" | "name" | "avatar" | "avatarUrl">;
   post: string;
-  status: 0 | 1 | 2;
+  status: CommentStatus;
   openToComment: boolean;
   _id: string;
   createdAt: string;
@@ -34,18 +34,9 @@ export interface AnswerComment {
 export interface Comment {
   content: { text: string };
   _id: string;
-  user: {
-    _id: string;
-    name: string;
-    avatarUrl: string | null;
-  };
-  post: {
-    _id: string;
-    title: string;
-    slug: string;
-    coverImageUrl: string | null;
-  };
-  status: 0 | 1 | 2;
+  user: Pick<User, "_id" | "name" | "avatar" | "avatarUrl">;
+  post: Pick<Post, "_id" | "title" | "slug" | "coverImageUrl">;
+  status: CommentStatus;
   openToComment: boolean;
   answers: AnswerComment[];
   createdAt: string;

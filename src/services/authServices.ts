@@ -11,10 +11,10 @@ import {
   AuthResponse,
   User,
   UpdateProfileRequest,
-  UserPost,
-  UserComment,
   LogoutResponse,
 } from "@/types/authTypes";
+import { Comment } from "@/types/commentTypes";
+import { Post } from "@/types/postTypes";
 
 /* ---------- Auth API ---------- */
 
@@ -64,8 +64,8 @@ export const getAllUsersApi = async (
 export const getUserPostsApi = async (
   queries: string,
   options?: AxiosRequestConfig,
-): Promise<PaginatedResponse<UserPost>> => {
-  const res = await http.get<ApiResponse<PaginatedResponse<UserPost>>>(
+): Promise<PaginatedResponse<Post>> => {
+  const res = await http.get<ApiResponse<PaginatedResponse<Post>>>(
     `/user/user-posts?${queries}`,
     options,
   );
@@ -75,8 +75,8 @@ export const getUserPostsApi = async (
 export const getUserCommentsApi = async (
   queries: string,
   options?: AxiosRequestConfig,
-): Promise<PaginatedResponse<UserComment>> => {
-  const res = await http.get<ApiResponse<PaginatedResponse<UserComment>>>(
+): Promise<PaginatedResponse<Comment>> => {
+  const res = await http.get<ApiResponse<PaginatedResponse<Comment>>>(
     `/user/user-comments?${queries}`,
     options,
   );

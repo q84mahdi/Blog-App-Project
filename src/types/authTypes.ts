@@ -35,61 +35,6 @@ export interface User {
   avatarUrl: string | null;
 }
 
-export interface UserPost {
-  _id: string;
-  title: string;
-  slug: string;
-  category: {
-    _id: string;
-    title: string;
-    slug: string;
-  };
-  type: "free" | "premium";
-  briefText: string;
-  text: string;
-  coverImage: string;
-  likes: string[];
-  likesCount: number;
-  bookmarks: string[];
-  readingTime: number;
-  tags: string[];
-  author: {
-    _id: string;
-    name: string;
-    avatar: string;
-    avatarUrl: string;
-  };
-  related: string[];
-  comments: UserComment[];
-  createdAt: string;
-  updatedAt: string;
-  coverImageUrl: string;
-}
-
-export interface UserComment {
-  content: {
-    text: string;
-  };
-  _id: string;
-  user: {
-    _id: string;
-    name: string;
-    avatar: string;
-    avatarUrl: string;
-  };
-  post: {
-    _id: string;
-    title: string;
-    slug: string;
-    coverImageUrl: string;
-  };
-  status: 0 | 1 | 2;
-  openToComment: boolean;
-  answers: string[];
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface UpdateProfileRequest {
   name: string;
   email: string;
