@@ -20,9 +20,9 @@ export async function fetchAdminCardsData() {
       getAllPostsApi("", options),
     ]);
 
-    const numberOfUsers = Number(data[0].totalUsers ?? "0");
-    const numberOfComments = Number(data[1].totalComments ?? "0");
-    const numberOfPosts = Number(data[2].totalPosts ?? "0");
+    const numberOfUsers = Number(data[0].dataCount ?? "0");
+    const numberOfComments = Number(data[1].dataCount ?? "0");
+    const numberOfPosts = Number(data[2].dataCount ?? "0");
 
     return {
       numberOfUsers,
@@ -30,8 +30,9 @@ export async function fetchAdminCardsData() {
       numberOfPosts,
     };
   } catch (error) {
-    console.log(error?.response?.data?.message);
-    throw new Error("خطا در بارگذاری اطلاعات");
+    if (error instanceof Error) {
+      console.log(error.message);
+    }
   }
 }
 
@@ -49,8 +50,8 @@ export async function fetchUserCardsData() {
     const numberOfBookmarks = Number(
       data[0].user.bookmarkedPosts.length ?? "0",
     );
-    const numberOfComments = Number(data[1].totalComments ?? "0");
-    const numberOfPosts = Number(data[2].totalPosts ?? "0");
+    const numberOfComments = Number(data[1].dataCount ?? "0");
+    const numberOfPosts = Number(data[2].dataCount ?? "0");
 
     return {
       numberOfBookmarks,
@@ -58,7 +59,8 @@ export async function fetchUserCardsData() {
       numberOfPosts,
     };
   } catch (error) {
-    console.log(error?.response?.data?.message);
-    throw new Error("خطا در بارگذاری اطلاعات");
+    if (error instanceof Error) {
+      console.log(error.message);
+    }
   }
 }

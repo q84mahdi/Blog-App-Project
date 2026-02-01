@@ -5,6 +5,12 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface ApiErrorResponse {
+  message: string;
+  statusCode?: number;
+  errors?: string[];
+}
+
 export interface EmptyResponse {
   message: string;
 }

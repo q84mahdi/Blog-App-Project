@@ -1,3 +1,4 @@
+import { ApiErrorResponse } from "@/types/globalTypes";
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -37,7 +38,7 @@ app.interceptors.request.use(
 // Response Interceptor
 app.interceptors.response.use(
   (response: AxiosResponse): AxiosResponse => response,
-  async (error: AxiosError): Promise<AxiosResponse> => {
+  async (error: AxiosError<ApiErrorResponse>): Promise<AxiosResponse> => {
     const originalConfig = error.config as RetryAxiosRequestConfig;
 
     if (
@@ -54,7 +55,9 @@ app.interceptors.response.use(
       return app(originalConfig);
     }
 
-    return Promise.reject(error);
+    const message = error.response?.data?.message ?? "خطای ارتباط با سرور";
+
+    return Promise.reject(new Error(message));
   },
 );
 
