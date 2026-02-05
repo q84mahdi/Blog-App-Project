@@ -34,8 +34,11 @@ export const signinApi = async (data: SigninRequest): Promise<AuthResponse> => {
   return res.data.data;
 };
 
-export const logoutApi = async (): Promise<void> => {
-  await http.post<LogoutResponse, void>("/user/logout");
+export const logoutApi = async (): Promise<LogoutResponse> => {
+  const res = await http.post<ApiResponse<LogoutResponse>, void>(
+    "/user/logout",
+  );
+  return res.data.data;
 };
 
 /* ---------- User API ---------- */

@@ -6,20 +6,61 @@ import {
   signinApi,
   signupApi,
 } from "@/services/authServices";
+import { SigninRequest, SignupRequest, User } from "@/types/authTypes";
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useReducer } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useReducer,
+} from "react";
 import toast from "react-hot-toast";
 
-const AuthContext = createContext();
+// Types Definition
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+  signup: (values: SignupRequest) => void;
+  signin: (values: SigninRequest) => void;
+  logout: () => void;
+}
 
-const initialState = {
+interface AuthStateType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+}
+
+type LoadingAction = { type: "LOADING" };
+type SignupAction = { type: "SIGNUP"; payload: User };
+type SigninAction = { type: "SIGNIN"; payload: User };
+type UserLoadedAction = { type: "USER/LOADED"; payload: User };
+type LogoutAction = { type: "LOGOUT" };
+type RejectedAction = { type: "REJECTED"; payload: string };
+type Action =
+  | LoadingAction
+  | SignupAction
+  | SigninAction
+  | UserLoadedAction
+  | LogoutAction
+  | RejectedAction;
+
+// Data initialization
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+
+const Initial_State: AuthStateType = {
   user: null,
   isAuthenticated: false,
   isLoading: true,
   error: null,
 };
 
-const authReducer = (state, action) => {
+// Reducer Function
+const authReducer = (state: AuthStateType, action: Action) => {
   switch (action.type) {
     case "LOADING":
       return {
@@ -80,15 +121,16 @@ const authReducer = (state, action) => {
   }
 };
 
-export default function AuthProvider({ children }) {
+// Provider Component
+export default function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   const [{ user, isAuthenticated, isLoading, error }, dispatch] = useReducer(
     authReducer,
-    initialState,
+    Initial_State,
   );
 
-  async function signup(values) {
+  async function signup(values: SignupRequest) {
     dispatch({ type: "LOADING" });
 
     try {
@@ -97,12 +139,14 @@ export default function AuthProvider({ children }) {
       router.push("/profile");
       toast.success(message);
     } catch (error) {
-      dispatch({ type: "REJECTED", payload: error });
-      toast.error(error?.response?.data?.message);
+      const message = error instanceof Error ? error.message : "خطای ناشناخته";
+
+      dispatch({ type: "REJECTED", payload: message });
+      toast.error(message);
     }
   }
 
-  async function signin(values) {
+  async function signin(values: SigninRequest) {
     dispatch({ type: "LOADING" });
 
     try {
@@ -111,8 +155,10 @@ export default function AuthProvider({ children }) {
       router.push("/profile");
       toast.success(message);
     } catch (error) {
-      dispatch({ type: "REJECTED", payload: error });
-      toast.error(error?.response?.data?.message);
+      const message = error instanceof Error ? error.message : "خطای ناشناخته";
+
+      dispatch({ type: "REJECTED", payload: message });
+      toast.error(message);
     }
   }
 
@@ -123,8 +169,10 @@ export default function AuthProvider({ children }) {
       const { user } = await getUserApi();
       dispatch({ type: "USER/LOADED", payload: user });
     } catch (error) {
-      dispatch({ type: "REJECTED", payload: error });
-      console.log(error?.response?.data?.message);
+      const message = error instanceof Error ? error.message : "خطای ناشناخته";
+
+      dispatch({ type: "REJECTED", payload: message });
+      toast.error(message);
     }
   }
 
@@ -137,8 +185,10 @@ export default function AuthProvider({ children }) {
       router.push("/");
       toast.success(message || "با موفقیت از سایت خارج شدید.");
     } catch (error) {
-      dispatch({ type: "REJECTED", payload: error });
-      console.log(error?.response?.data?.message);
+      const message = error instanceof Error ? error.message : "خطای ناشناخته";
+
+      dispatch({ type: "REJECTED", payload: message });
+      toast.error(message);
     }
   }
 
@@ -167,6 +217,7 @@ export default function AuthProvider({ children }) {
   );
 }
 
+// Custom Hook
 export function useAuth() {
   const context = useContext(AuthContext);
 
