@@ -1,11 +1,29 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
-const DarkModeContext = createContext();
+// Types Definition
+interface DarkModeContextType {
+  isDarkMode: boolean;
+  toggleDarkMode: Dispatch<SetStateAction<boolean>>;
+}
 
-export function DarkModeProvider({ children }) {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
+// Data initialization
+const DarkModeContext = createContext<DarkModeContextType>(
+  {} as DarkModeContextType,
+);
+
+// Provider Component
+export function DarkModeProvider({ children }: { children: ReactNode }) {
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     if (typeof window === "undefined") {
       return false;
     }
@@ -39,6 +57,7 @@ export function DarkModeProvider({ children }) {
   );
 }
 
+// Custom Hook
 export function useDarkMode() {
   const context = useContext(DarkModeContext);
 
