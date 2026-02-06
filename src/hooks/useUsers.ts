@@ -1,24 +1,18 @@
 import { getAllUsersApi, getUserApi } from "@/services/authServices";
+import { User } from "@/types/authTypes";
+import { PaginatedResponse } from "@/types/globalTypes";
 import { useQuery } from "@tanstack/react-query";
 
-export function useGetUsers(queries) {
-  const { isLoading, data } = useQuery({
+export function useGetUsers(queries = "") {
+  return useQuery<PaginatedResponse<User>>({
     queryKey: ["users", queries],
     queryFn: () => getAllUsersApi(queries),
   });
-
-  const { users, totalPages } = data || {};
-
-  return { isLoading, users, totalPages };
 }
 
 export function useGetUser() {
-  const { isLoading, data } = useQuery({
+  return useQuery<{ user: User }>({
     queryKey: ["user"],
     queryFn: getUserApi,
   });
-
-  const { user } = data || {};
-
-  return { isLoading, user };
 }
