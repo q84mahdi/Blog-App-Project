@@ -11,7 +11,7 @@ import { CreatePostResponse, Post } from "@/types/postTypes";
 
 export const getAllPostsApi = async (
   queries: string,
-  options: AxiosRequestConfig,
+  options?: AxiosRequestConfig,
 ): Promise<PaginatedResponse<Post>> => {
   const res = await http.get<ApiResponse<PaginatedResponse<Post>>>(
     `/post/list?${queries}`,
@@ -30,7 +30,7 @@ export const getPostBySlugApi = async (
 
 export const getPostByIdApi = async (
   postId: number,
-  options: AxiosRequestConfig,
+  options?: AxiosRequestConfig,
 ): Promise<Post> => {
   const res = await http.get<ApiResponse<Post>>(`/post/${postId}`, options);
   return res.data.data;
