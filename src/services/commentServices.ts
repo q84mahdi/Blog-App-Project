@@ -23,7 +23,7 @@ export const createCommentApi = async (
 
 export const getAllCommentsApi = async (
   queries: string,
-  options: AxiosRequestConfig,
+  options?: AxiosRequestConfig,
 ): Promise<GetAllCommentsResponse> => {
   const res = await http.get<ApiResponse<GetAllCommentsResponse>>(
     `/comment/list?${queries}`,
