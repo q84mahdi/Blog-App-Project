@@ -1,4 +1,6 @@
-function SvgLoaderComponent(props) {
+import { ComponentProps } from "react";
+
+function SvgLoaderComponent(props: ComponentProps<"svg">) {
   return (
     <svg
       className="fill-primary-900"

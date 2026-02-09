@@ -1,6 +1,12 @@
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 
-function Avatar({ src, size = 24 }) {
+interface AvatarProps {
+  src?: string | StaticImport;
+  size?: number;
+}
+
+const Avatar = ({ src, size = 24 }: AvatarProps) => {
   return (
     <Image
       src={src || "/images/avatar.png"}
@@ -10,5 +16,5 @@ function Avatar({ src, size = 24 }) {
       alt="user avatar"
     />
   );
-}
+};
 export default Avatar;

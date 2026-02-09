@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-function Drawer({ open, onClose, children }) {
+interface DrawerProps {
+  open: boolean;
+  children: React.ReactNode;
+  onClose: () => void;
+}
+
+function Drawer({ open, children, onClose }: DrawerProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    //  Now we are sure that the component is mounted
     setMounted(true);
   }, []);
 

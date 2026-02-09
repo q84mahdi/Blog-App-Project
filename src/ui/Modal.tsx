@@ -6,12 +6,25 @@ import { createPortal } from "react-dom";
 import useOutsideClick from "@/hooks/useOutsideClick";
 import { useEffect, useState } from "react";
 
-function Modal({ title, description = "", open, onClose, children }) {
-  const ref = useOutsideClick(onClose);
+interface ModalProps {
+  title: string;
+  description?: string;
+  open: boolean;
+  children: React.ReactNode;
+  onClose: () => void;
+}
+
+function Modal({
+  title,
+  open,
+  children,
+  description = "",
+  onClose,
+}: ModalProps) {
+  const ref = useOutsideClick<HTMLDivElement>(onClose);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    //  Now we are sure that the component is mounted
     setMounted(true);
   }, []);
 
@@ -34,7 +47,7 @@ function Modal({ title, description = "", open, onClose, children }) {
               <p className="text-sm text-secondary-500">{description}</p>
             </div>
 
-            <ButtonIcon onClick={onClose} varient="danger">
+            <ButtonIcon onClick={onClose} variant="danger">
               <XMarkIcon />
             </ButtonIcon>
           </div>

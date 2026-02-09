@@ -1,4 +1,8 @@
-function Spinner({ size = "large" }) {
+interface SpinnerProps {
+  size?: "small" | "large";
+}
+
+function Spinner({ size = "large" }: SpinnerProps) {
   const spinnerSize = {
     large: "spinner",
     small: "spinner-mini",

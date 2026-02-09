@@ -1,7 +1,19 @@
 import { TrashIcon } from "@heroicons/react/24/outline";
 import Button from "./Button";
 
-function ConfirmDelete({ resourceName, onClose, disabled, onConfirm }) {
+interface ConfirmDeleteProps {
+  resourceName: string;
+  disabled?: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}
+
+function ConfirmDelete({
+  resourceName,
+  disabled = false,
+  onClose,
+  onConfirm,
+}: ConfirmDeleteProps) {
   return (
     <div>
       <h2 className="mb-8 text-base font-bold text-secondary-700">
