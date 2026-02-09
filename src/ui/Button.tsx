@@ -1,18 +1,27 @@
+import { ComponentProps } from "react";
+
 const btnType = {
   primary: "btn--primary",
   secondary: "btn--secondary",
   outline: "btn--outline",
   danger: "btn--danger",
-};
+} as const;
+
+type Variant = keyof typeof btnType;
+
+interface ButtonProps extends ComponentProps<"button"> {
+  loading?: boolean;
+  variant?: Variant;
+}
 
 function Button({
   children,
-  onClick,
   loading = false,
   variant = "primary",
   className,
+  onClick,
   ...rest
-}) {
+}: ButtonProps) {
   return (
     <button
       onClick={onClick}

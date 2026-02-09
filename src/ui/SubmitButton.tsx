@@ -1,8 +1,18 @@
 import { useFormStatus } from "react-dom";
 import Button from "./Button";
 import SvgLoaderComponent from "./SvgLoaderComponent";
+import { ComponentProps } from "react";
 
-function SubmitButton({ children, className, isLoading = false, ...rest }) {
+interface SubmitButtonProps extends ComponentProps<"button"> {
+  isLoading: boolean;
+}
+
+function SubmitButton({
+  children,
+  className,
+  isLoading = false,
+  ...rest
+}: SubmitButtonProps) {
   const { pending } = useFormStatus();
 
   return (
