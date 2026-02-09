@@ -8,21 +8,24 @@ import { useState } from "react";
 const initalSortItems = [
   { value: "desc", label: "جدیدترین" },
   { value: "asc", label: "قدیمی‌ترین" },
-];
+] as const;
 
-function SortButton({ sortItems = initalSortItems }) {
+interface SortButtonProps {
+  sortItems?: typeof initalSortItems;
+}
+
+function SortButton({ sortItems = initalSortItems }: SortButtonProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
   const [open, setOpen] = useState(false);
-  const [sortValue, setSortValue] = useState(
-    searchParams.get("order") || "desc",
-  );
+  const [sortValue, setSortValue] =
+    useState<(typeof sortItems)[number]["value"]>("desc");
 
-  const ref = useOutsideClick(() => setOpen(false));
+  const ref = useOutsideClick<HTMLDivElement>(() => setOpen(false));
 
-  const handleSetSortValue = (value) => {
+  const handleSetSortValue = (value: (typeof sortItems)[number]["value"]) => {
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.set("order", value);
 
@@ -41,7 +44,8 @@ function SortButton({ sortItems = initalSortItems }) {
         <FunnelIcon className="h-5 w-5" />
 
         <span className="hidden leading-5 md:block">
-          {sortItems.find((sortItem) => sortItem.value === sortValue).label}
+          {sortItems.find((sortItem) => sortItem.value === sortValue)?.label ||
+            "مرتب سازی"}
         </span>
       </button>
 

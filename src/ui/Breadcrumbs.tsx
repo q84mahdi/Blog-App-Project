@@ -1,7 +1,15 @@
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
-function Breadcrumbs({ breadcrumbs }) {
+interface BreadcrumbsProps {
+  breadcrumbs: {
+    href: string;
+    label: string;
+    active?: boolean;
+  }[];
+}
+
+function Breadcrumbs({ breadcrumbs }: BreadcrumbsProps) {
   return (
     <nav aria-label="Breadcrumbs" className="mb-8 block">
       <ol className="flex items-center gap-x-2 text-lg">

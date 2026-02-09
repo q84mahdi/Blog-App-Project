@@ -6,14 +6,17 @@ import classNames from "classnames";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
-export default function Pagination({ totalPages }) {
-  // const totalPages = Math.ceil(Number(length) / itemsPerPage);
+interface PaginationProps {
+  totalPages: number;
+}
+
+export default function Pagination({ totalPages }: PaginationProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
   const itemsPerPage = Number(searchParams.get("limit")) || 6;
 
-  const createPageURL = (pageNumber) => {
+  const createPageURL = (pageNumber: number) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", pageNumber.toString());
     params.set("limit", itemsPerPage.toString());
@@ -32,8 +35,7 @@ export default function Pagination({ totalPages }) {
 
       <div className="flex -space-x-px">
         {allPages.map((page, index) => {
-          // let position: "first" | "last" | "single" | "middle" | undefined;
-          let position;
+          let position: "first" | "last" | "single" | "middle" | undefined;
           if (index === 0) position = "first";
           if (index === allPages.length - 1) position = "last";
           if (allPages.length === 1) position = "single";
@@ -42,7 +44,7 @@ export default function Pagination({ totalPages }) {
           return (
             <PaginationNumber
               key={`${page}-${index}`}
-              href={createPageURL(page)}
+              href={createPageURL(Number(page))}
               page={page}
               position={position}
               isActive={currentPage === page}
@@ -60,9 +62,19 @@ export default function Pagination({ totalPages }) {
   );
 }
 
-// position?: "first" | "last" | "middle" | "single",
+interface PaginationNumberProps {
+  page: number | string;
+  href: string;
+  isActive: boolean;
+  position?: "first" | "last" | "middle" | "single";
+}
 
-function PaginationNumber({ page, href, isActive, position }) {
+function PaginationNumber({
+  page,
+  href,
+  isActive,
+  position,
+}: PaginationNumberProps) {
   const className = classNames(
     "flex h-10 w-10 items-center justify-center text-sm border border-secondary-400 text-secondary-400",
     {
@@ -83,7 +95,17 @@ function PaginationNumber({ page, href, isActive, position }) {
   );
 }
 
-function PaginationArrow({ href, direction, isDisabled }) {
+interface PaginationArrowProps {
+  direction: "left" | "right";
+  href: string;
+  isDisabled: boolean;
+}
+
+function PaginationArrow({
+  href,
+  direction,
+  isDisabled,
+}: PaginationArrowProps) {
   const className = classNames(
     "flex h-10 w-10 items-center justify-center rounded-md border border-secondary-400 text-secondary-400",
     {
