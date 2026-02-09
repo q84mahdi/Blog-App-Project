@@ -1,17 +1,36 @@
-function RHFTextarea({
+import { ComponentProps } from "react";
+import {
+  FieldErrors,
+  FieldValues,
+  Path,
+  RegisterOptions,
+  UseFormRegister,
+} from "react-hook-form";
+
+interface RHFTextareaProps<T extends FieldValues>
+  extends Omit<ComponentProps<"textarea">, "name"> {
+  label: string;
+  name: Path<T>;
+  register: UseFormRegister<T>;
+  isRequired?: boolean;
+  errors: FieldErrors<T>;
+  validationSchema?: RegisterOptions<T, Path<T>>;
+}
+
+function RHFTextarea<T extends FieldValues>({
   label,
   name,
   dir = "rtl",
   register,
   errors,
   isRequired,
-  validationSchema = {},
+  validationSchema,
   className = "",
   rows = 4,
   ...rest
-}) {
+}: RHFTextareaProps<T>) {
   const inputError = errors?.[name];
-  const hasError = !!(errors && inputError);
+  const hasError = !!inputError;
 
   return (
     <div className={`textField relative ${className}`}>
@@ -31,7 +50,7 @@ function RHFTextarea({
 
       {hasError && (
         <span className="block text-xs text-red-600">
-          {inputError?.message}
+          {String(inputError.message)}
         </span>
       )}
     </div>

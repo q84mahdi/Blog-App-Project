@@ -1,20 +1,29 @@
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
+import { ComponentProps } from "react";
+import { FieldErrors, FieldValues, Path } from "react-hook-form";
 
-function FileInput({
+interface FileInputProps<T extends FieldValues>
+  extends Omit<ComponentProps<"input">, "name" | "type"> {
+  label: string;
+  name: Path<T>;
+  errors: FieldErrors<T>;
+}
+
+function FileInput<T extends FieldValues>({
   label,
   name,
   value,
-  dir = "rtl",
-  onChange,
   errors,
   className,
+  dir = "rtl",
+  onChange,
   ...rest
-}) {
+}: FileInputProps<T>) {
   const inputError = errors?.[name];
-  const hasError = !!(errors && inputError);
+  const hasError = !!inputError;
 
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col">
       <label
         htmlFor="file-upload"
         className={`relative flex h-fit cursor-pointer items-center justify-center gap-x-2 rounded-lg border-2 border-primary-900 py-3 text-primary-900 ${className}`}
@@ -37,7 +46,7 @@ function FileInput({
 
       {hasError && (
         <span className="mt-2 block text-xs text-red-600">
-          {inputError?.message}
+          {String(inputError.message)}
         </span>
       )}
     </div>

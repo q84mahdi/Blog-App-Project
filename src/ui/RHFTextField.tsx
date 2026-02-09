@@ -1,4 +1,23 @@
-function RHFTextField({
+import { ComponentProps } from "react";
+import {
+  FieldErrors,
+  FieldValues,
+  Path,
+  RegisterOptions,
+  UseFormRegister,
+} from "react-hook-form";
+
+interface RHFTextFieldProps<T extends FieldValues>
+  extends Omit<ComponentProps<"input">, "name"> {
+  label: string;
+  name: Path<T>;
+  register: UseFormRegister<T>;
+  isRequired?: boolean;
+  errors: FieldErrors<T>;
+  validationSchema?: RegisterOptions<T, Path<T>>;
+}
+
+function RHFTextField<T extends FieldValues>({
   type = "text",
   label,
   name,
@@ -6,11 +25,11 @@ function RHFTextField({
   register,
   errors,
   isRequired,
-  validationSchema = {},
+  validationSchema,
   ...rest
-}) {
+}: RHFTextFieldProps<T>) {
   const inputError = errors?.[name];
-  const hasError = !!(errors && inputError);
+  const hasError = !!inputError;
 
   return (
     <div className="textField relative">
@@ -31,7 +50,7 @@ function RHFTextField({
 
       {hasError && (
         <span className="mt-2 block text-xs text-red-600">
-          {inputError?.message}
+          {String(inputError.message)}
         </span>
       )}
     </div>

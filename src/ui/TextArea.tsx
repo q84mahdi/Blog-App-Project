@@ -1,3 +1,12 @@
+interface TextAreaProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: () => void;
+  isRequired: boolean;
+  dir: "rtl" | "ltr";
+}
+
 function TextArea({
   label,
   name,
@@ -5,7 +14,7 @@ function TextArea({
   onChange,
   isRequired = false,
   dir = "rtl",
-}) {
+}: TextAreaProps) {
   return (
     <div className="textField relative">
       <label htmlFor={name} className="mb-2 block text-secondary-700">

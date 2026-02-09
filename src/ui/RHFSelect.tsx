@@ -1,6 +1,24 @@
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { FieldValues, Path, UseFormRegister } from "react-hook-form";
 
-function RHFSelect({ label, name, register, isRequired, options }) {
+interface RHFSelectProps<T extends FieldValues> {
+  label: string;
+  name: Path<T>;
+  register: UseFormRegister<T>;
+  isRequired?: boolean;
+  options: {
+    value: string | number;
+    label: string;
+  }[];
+}
+
+function RHFSelect<T extends FieldValues>({
+  label,
+  name,
+  register,
+  isRequired,
+  options,
+}: RHFSelectProps<T>) {
   return (
     <div>
       <label htmlFor={name} className="mb-2 block text-secondary-700">
@@ -10,8 +28,8 @@ function RHFSelect({ label, name, register, isRequired, options }) {
 
       <div className="textField__input relative">
         <select
-          className="w-full appearance-none bg-transparent px-2"
           id={name}
+          className="w-full appearance-none bg-transparent px-2"
           {...register(name)}
         >
           {options.map((option) => (
