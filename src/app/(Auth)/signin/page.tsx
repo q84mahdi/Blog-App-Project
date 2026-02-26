@@ -9,13 +9,13 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import Spinner from "@/ui/Spinner";
 
+interface SigninFormValues {
+  email: string;
+  password: string;
+}
+
 const schema = yup
   .object({
-    fullname: yup
-      .string()
-      .required("نام و نام خانوادگی الزامی است")
-      .min(5, "نام باید بیشتر از ۵ کارکتر باشد")
-      .max(30, "نام باید کمتر از ۳۰ کارکتر باشد"),
     email: yup.string().required("ایمیل الزامی است").email("ایمیل نامعتبر است"),
     password: yup
       .string()
@@ -24,27 +24,26 @@ const schema = yup
   })
   .required();
 
-function Signup() {
-  const { isAuthenticated, signup } = useAuth();
+function Signin() {
+  const { isAuthenticated, signin } = useAuth();
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isLoading },
-  } = useForm({
+  } = useForm<SigninFormValues>({
     resolver: yupResolver(schema),
     mode: "onTouched",
   });
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values: SigninFormValues) => {
     const userData = {
-      name: values.fullname,
       email: values.email,
       password: values.password,
     };
 
-    signup(userData);
+    signin(userData);
 
     if (isAuthenticated) reset();
   };
@@ -52,17 +51,10 @@ function Signup() {
   return (
     <div className="form">
       <h1 className="text-lg font-bold text-secondary-800">
-        ایجاد حساب کاربری
+        ورود به حساب کاربری
       </h1>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <RHFTextField
-          label="نام و نام خانوادگی"
-          name="fullname"
-          register={register}
-          errors={errors}
-          isRequired
-        />
         <RHFTextField
           label="ایمیل"
           name="email"
@@ -71,6 +63,7 @@ function Signup() {
           isRequired
           dir="ltr"
         />
+
         <RHFTextField
           label="رمز عبور"
           name="password"
@@ -80,19 +73,20 @@ function Signup() {
           type="password"
           dir="ltr"
         />
+
         <div>
           {isLoading ? (
             <Spinner size="small" />
           ) : (
-            <Button className="mt-2 w-full font-bold">ثبت نام</Button>
+            <Button className="mt-2 w-full font-bold">ورود</Button>
           )}
         </div>
       </form>
 
-      <Link href="/signin" className="text-secondary-600">
-        ورود به حساب کاربری
+      <Link href="/signup" className="text-secondary-600">
+        ایجاد حساب کاربری
       </Link>
     </div>
   );
 }
-export default Signup;
+export default Signin;
