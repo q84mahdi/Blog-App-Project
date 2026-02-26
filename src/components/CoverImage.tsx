@@ -1,7 +1,14 @@
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import Link from "next/link";
 
-function CoverImage({ title, coverImageUrl, slug }) {
+interface CoverImageProps {
+  title: string;
+  coverImageUrl: string | StaticImport;
+  slug: string;
+}
+
+function CoverImage({ title, coverImageUrl, slug }: CoverImageProps) {
   return (
     <div className="relative aspect-video overflow-hidden rounded-md">
       <Link href={`/blogs/${slug}`}>

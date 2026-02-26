@@ -1,7 +1,14 @@
 import Avatar from "@/ui/Avatar";
 import truncateText from "@/utils/truncateText";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
-function PostAuthor({ name, avatarUrl, isTruncate = false }) {
+interface PostAuthorProps {
+  name: string;
+  avatarUrl: string | StaticImport | undefined;
+  isTruncate: boolean;
+}
+
+function PostAuthor({ name, avatarUrl, isTruncate = false }: PostAuthorProps) {
   return (
     <div className="flex items-center gap-x-2">
       <Avatar src={avatarUrl} />

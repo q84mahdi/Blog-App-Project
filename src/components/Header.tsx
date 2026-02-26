@@ -57,7 +57,7 @@ function Header() {
 
             <li>
               <Link href={isAuthenticated ? "/admin" : "/signin"}>
-                <ButtonIcon varient="primary">
+                <ButtonIcon variant="primary">
                   <Cog6ToothIcon className="h-5 w-5" />
                 </ButtonIcon>
               </Link>
@@ -66,13 +66,13 @@ function Header() {
             <li>
               {isAuthenticated ? (
                 <Link href="/profile">
-                  <ButtonIcon varient="primary">
+                  <ButtonIcon variant="primary">
                     <UserIcon className="h-5 w-5" />
                   </ButtonIcon>
                 </Link>
               ) : (
                 <Link href="/signin">
-                  <ButtonIcon varient="primary">
+                  <ButtonIcon variant="primary">
                     <ArrowLeftEndOnRectangleIcon className="h-5 w-5" />
                   </ButtonIcon>
                 </Link>

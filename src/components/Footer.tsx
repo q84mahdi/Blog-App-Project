@@ -10,6 +10,7 @@ import Link from "next/link";
 function Footer() {
   return (
     <div className="mt-10 w-full border-t border-secondary-300 bg-gradient-to-t from-secondary-300/50 via-secondary-200/50 to-secondary-100">
+      {/* Footer Body Section */}
       <div className="container flex flex-col gap-y-10 px-6 py-12 lg:flex-row lg:justify-between xl:max-w-screen-xl">
         {/* Logo and About */}
         <div className="flex flex-col gap-4 lg:w-1/3">

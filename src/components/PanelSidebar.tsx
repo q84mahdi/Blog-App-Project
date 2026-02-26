@@ -13,8 +13,14 @@ import Modal from "@/ui/Modal";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePathname } from "next/navigation";
 import classNames from "classnames";
+import { SidebarNavType } from "./PanelHeader";
 
-function PanelSidebar({ onClose = () => {}, sidebarNavs }) {
+interface PanelSidebarProps {
+  onClose: () => void;
+  sidebarNavs: SidebarNavType[];
+}
+
+function PanelSidebar({ onClose = () => {}, sidebarNavs }: PanelSidebarProps) {
   const pathname = usePathname();
 
   const [open, setOpen] = useState(false);
@@ -40,7 +46,7 @@ function PanelSidebar({ onClose = () => {}, sidebarNavs }) {
 
         <ButtonIcon
           className="block border-none lg:hidden"
-          varient="outline"
+          variant="outline"
           onClick={onClose}
         >
           <XMarkIcon className="!h-5 !w-5" />
@@ -49,7 +55,7 @@ function PanelSidebar({ onClose = () => {}, sidebarNavs }) {
 
       {/* Sidebar Content */}
       <div className="flex-auto">
-        <ul className="space-y-2 mb-2">
+        <ul className="mb-2 space-y-2">
           {sidebarNavs.map((nav, index) => (
             <li key={index}>
               <Link

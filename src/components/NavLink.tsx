@@ -1,9 +1,16 @@
 "use client";
 
+import { Url } from "next/dist/shared/lib/router/router";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ReactNode } from "react";
 
-function NavLink({ path, children }) {
+interface NavLinkProps {
+  path: Url;
+  children: ReactNode;
+}
+
+function NavLink({ path, children }: NavLinkProps) {
   const pathname = usePathname();
 
   return (

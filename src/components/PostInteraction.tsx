@@ -1,8 +1,5 @@
 "use client";
 
-import { bookmarkPostApi, likePostApi } from "@/services/postServices";
-import ButtonIcon from "@/ui/ButtonIcon";
-import { toPersianNumbers } from "@/utils/toPersianNumbers";
 import {
   BookmarkIcon,
   ChatBubbleOvalLeftEllipsisIcon,
@@ -12,15 +9,23 @@ import {
   BookmarkIcon as BookmarkIconSolid,
   HeartIcon as HeartIconSolid,
 } from "@heroicons/react/24/solid";
+import { bookmarkPostApi, likePostApi } from "@/services/postServices";
+import { Post } from "@/types/postTypes";
+import ButtonIcon from "@/ui/ButtonIcon";
+import { toPersianNumbers } from "@/utils/toPersianNumbers";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-function PostInteraction({ post }) {
+interface PostInteractionProps {
+  post: Post;
+}
+
+function PostInteraction({ post }: PostInteractionProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const likeHandler = async (postId) => {
+  const likeHandler = async (postId: string) => {
     try {
       const { message } = await likePostApi(postId);
       toast.success(message);
@@ -28,11 +33,12 @@ function PostInteraction({ post }) {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
     } catch (error) {
-      toast.error(error?.response?.data?.message);
+      const message = error instanceof Error ? error.message : "خطای ناشناخته";
+      toast.error(message);
     }
   };
 
-  const bookmarkHandler = async (postId) => {
+  const bookmarkHandler = async (postId: string) => {
     try {
       const { message } = await bookmarkPostApi(postId);
       toast.success(message);
@@ -40,23 +46,24 @@ function PostInteraction({ post }) {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
     } catch (error) {
-      toast.error(error?.response?.data?.message);
+      const message = error instanceof Error ? error.message : "خطای ناشناخته";
+      toast.error(message);
     }
   };
 
   return (
     <div className="flex items-center gap-x-2">
-      <ButtonIcon varient="secondary">
+      <ButtonIcon variant="secondary">
         <ChatBubbleOvalLeftEllipsisIcon />
         <span>{toPersianNumbers(post.commentsCount)}</span>
       </ButtonIcon>
 
-      <ButtonIcon varient="red" onClick={() => likeHandler(post._id)}>
+      <ButtonIcon variant="red" onClick={() => likeHandler(post._id)}>
         {post.isLiked ? <HeartIconSolid /> : <HeartIcon />}
         <span>{toPersianNumbers(post.likesCount)}</span>
       </ButtonIcon>
 
-      <ButtonIcon varient="primary" onClick={() => bookmarkHandler(post._id)}>
+      <ButtonIcon variant="primary" onClick={() => bookmarkHandler(post._id)}>
         {post.isBookmarked ? <BookmarkIconSolid /> : <BookmarkIcon />}
       </ButtonIcon>
     </div>

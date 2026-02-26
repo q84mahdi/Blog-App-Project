@@ -1,6 +1,17 @@
 import { toPersianNumbers } from "@/utils/toPersianNumbers";
+import { JSX } from "react";
 
-async function CardsWrapper({ cards }) {
+interface CardType {
+  title: string;
+  value: string | number;
+  icon: JSX.Element;
+}
+
+interface CardsWrapperProps {
+  cards: CardType[];
+}
+
+async function CardsWrapper({ cards }: CardsWrapperProps) {
   return (
     <div className="mb-8 grid gap-6 md:grid-cols-3">
       {cards.map((card, index) => (

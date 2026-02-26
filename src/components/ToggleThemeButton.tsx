@@ -15,7 +15,7 @@ function ToggleThemeButton() {
   if (!mounted) return null;
 
   return (
-    <ButtonIcon onClick={toggleDarkMode} varient="primary">
+    <ButtonIcon onClick={toggleDarkMode} variant="primary">
       {isDarkMode ? (
         <MoonIcon className="h-5 w-5" />
       ) : (

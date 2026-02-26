@@ -13,7 +13,7 @@ import {
 // Types Definition
 interface DarkModeContextType {
   isDarkMode: boolean;
-  toggleDarkMode: Dispatch<SetStateAction<boolean>>;
+  toggleDarkMode: () => void;
 }
 
 // Data initialization
