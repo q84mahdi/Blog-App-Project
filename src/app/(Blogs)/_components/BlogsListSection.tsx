@@ -4,12 +4,21 @@ import PostCard from "@/components/PostCard";
 import { useGetPosts } from "@/hooks/usePosts";
 import Fallback from "@/ui/Fallback";
 import { ArrowLeftCircleIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { Url } from "next/dist/shared/lib/router/router";
 import Link from "next/link";
 
-function BlogsListSection({ queryParams, link, text }) {
-  const { posts, isLoading } = useGetPosts(queryParams);
+interface BlogsListSectionProps {
+  queryParams: string;
+  link: Url;
+  text: string;
+}
+
+function BlogsListSection({ queryParams, link, text }: BlogsListSectionProps) {
+  const { data, isLoading } = useGetPosts(queryParams);
+  const posts = data?.data;
 
   if (isLoading) return <Fallback />;
+  if (!posts) return null;
 
   return (
     <div className="mb-12 flex flex-col gap-10 rounded-xl bg-gradient-to-b from-secondary-100 via-secondary-50 to-secondary-100 px-6 py-10 shadow-sm">

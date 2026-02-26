@@ -7,7 +7,7 @@ import { Post } from "@/types/postTypes";
 
 interface PostCardProps {
   post: Post;
-  hasInteractions: boolean;
+  hasInteractions?: boolean;
 }
 
 function PostCard({ post, hasInteractions = true }: PostCardProps) {
