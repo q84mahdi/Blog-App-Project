@@ -1,15 +1,21 @@
+import { AnswerComment, Comment } from "@/types/commentTypes";
 import Avatar from "@/ui/Avatar";
 import Button from "@/ui/Button";
 import { ArrowUturnRightIcon } from "@heroicons/react/24/outline";
 
-function Comment({ comment, onAddComment }) {
+interface CommentBoxProps {
+  comment: Comment | AnswerComment;
+  onAddComment?: () => void;
+}
+
+function CommentBox({ comment, onAddComment = () => {} }: CommentBoxProps) {
   return (
     <div>
       {/* Comment Header */}
       <div className="mb-5 flex items-center justify-between border-b border-b-secondary-200/70 pb-2">
         {/* Comment Auther */}
         <div className="flex items-center gap-x-2">
-          <Avatar size={34} src={comment.user.avatarUrl} />
+          <Avatar size={34} src={comment.user.avatarUrl || undefined} />
 
           <div className="w-full">
             <span className="mb-1 block text-sm font-bold text-secondary-600">
@@ -47,4 +53,4 @@ function Comment({ comment, onAddComment }) {
     </div>
   );
 }
-export default Comment;
+export default CommentBox;

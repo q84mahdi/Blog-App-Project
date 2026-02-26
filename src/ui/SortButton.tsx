@@ -5,14 +5,19 @@ import { FunnelIcon } from "@heroicons/react/24/outline";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-const initalSortItems = [
+interface SortItemType {
+  readonly value: string;
+  readonly label: string;
+}
+
+interface SortButtonProps {
+  sortItems?: readonly SortItemType[];
+}
+
+const initalSortItems: SortItemType[] = [
   { value: "desc", label: "جدیدترین" },
   { value: "asc", label: "قدیمی‌ترین" },
 ] as const;
-
-interface SortButtonProps {
-  sortItems?: typeof initalSortItems;
-}
 
 function SortButton({ sortItems = initalSortItems }: SortButtonProps) {
   const searchParams = useSearchParams();

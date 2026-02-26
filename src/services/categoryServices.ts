@@ -10,7 +10,7 @@ import { Category, CreateCategoryRequest } from "@/types/categoryTypes";
 /* ---------- Category API ---------- */
 
 export const getAllCategoriesApi = async (
-  queries: string,
+  queries?: string,
   options?: AxiosRequestConfig,
 ): Promise<PaginatedResponse<Category>> => {
   const res = await http.get<ApiResponse<PaginatedResponse<Category>>>(

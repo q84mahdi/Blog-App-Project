@@ -2,17 +2,23 @@
 
 import Button from "@/ui/Button";
 import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
-import Comment from "./Comment";
+import CommentBox from "./CommentBox";
 import classNames from "classnames";
 import Modal from "@/ui/Modal";
 import { useState } from "react";
 import CommentForm from "./CommentForm";
+import { Comment } from "@/types/commentTypes";
 
-function PostComments({ comments, postId }) {
+interface PostCommentsProps {
+  comments: Comment[];
+  postId: string;
+}
+
+function PostComments({ comments, postId }: PostCommentsProps) {
   const [open, setOpen] = useState(false);
-  const [parent, setParent] = useState(null);
+  const [parent, setParent] = useState<Comment | null>(null);
 
-  const addNewCommentHandler = (parent) => {
+  const addNewCommentHandler = (parent: Comment | null) => {
     setParent(parent);
     setOpen(true);
   };
@@ -28,7 +34,7 @@ function PostComments({ comments, postId }) {
       >
         <CommentForm
           postId={postId}
-          parentId={parent ? parent._id : null}
+          parentId={parent ? parent._id : undefined}
           onClose={() => setOpen(false)}
         />
       </Modal>
@@ -54,7 +60,7 @@ function PostComments({ comments, postId }) {
             <div key={comment._id}>
               {/* Main Comments */}
               <div className="mb-3 rounded-xl border border-secondary-200 p-2 sm:p-4">
-                <Comment
+                <CommentBox
                   comment={comment}
                   onAddComment={() => addNewCommentHandler(comment)}
                 />
@@ -73,7 +79,7 @@ function PostComments({ comments, postId }) {
                           },
                         )}
                       >
-                        <Comment comment={answer} />
+                        <CommentBox comment={answer} />
                       </div>
                     </div>
                   ))}

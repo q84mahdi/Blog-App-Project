@@ -9,36 +9,44 @@ import PostAuthor from "@/components/PostAuthor";
 import PostReadingTime from "@/components/PostReadingTime";
 import PostInteraction from "@/components/PostInteraction";
 import BackButton from "@/ui/BackButton";
+import { AxiosRequestConfig } from "axios";
 
-export async function generateStaticParams() {
-  const { posts } = await getAllPostsApi();
-  return posts.slice(0, 6).map((post) => ({ postSlug: post.slug }));
+interface SinglePostProps {
+  params: Promise<{ postSlug: string }>;
 }
 
 export const revalidate = 60;
 
-export async function generateMetadata(props) {
-  const params = await props.params;
-  const post = await getPostBySlugApi(params.postSlug);
+export async function generateStaticParams() {
+  const { data: posts } = await getAllPostsApi();
+  return posts.slice(0, 6).map((post) => ({ postSlug: post.slug }));
+}
+
+export async function generateMetadata({ params }: SinglePostProps) {
+  const resolvedParams = await params;
+  const post = await getPostBySlugApi(resolvedParams.postSlug);
+
   return {
     title: `پست ${post.title}`,
   };
 }
 
-async function SinglePost(props) {
-  const params = await props.params;
+async function SinglePost({ params }: SinglePostProps) {
+  const resolvedParams = await params;
   const cookiesStore = await cookies();
-  const options = setCookiesOnReq(cookiesStore);
+  const options = setCookiesOnReq(cookiesStore) as AxiosRequestConfig;
 
   let post;
 
   try {
-    const postData = await getPostBySlugApi(params.postSlug, options);
+    const postData = await getPostBySlugApi(resolvedParams.postSlug, options);
     post = postData;
 
     if (!post) notFound();
   } catch (error) {
-    console.log(error?.response?.data?.message);
+    if (error instanceof Error) {
+      console.log(error.message);
+    }
     notFound();
   }
 
@@ -51,7 +59,10 @@ async function SinglePost(props) {
 
       {/* Post Navbar */}
       <div className="flex w-full items-center justify-between border-b border-secondary-300 pb-1">
-        <PostAuthor {...post.author} />
+        <PostAuthor
+          name={post.author.name}
+          avatarUrl={post.author.avatarUrl || undefined}
+        />
         <div className="flex items-center gap-x-6">
           <PostReadingTime time={post.readingTime} />
           <PostInteraction post={post} />

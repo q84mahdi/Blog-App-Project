@@ -1,8 +1,13 @@
+import { Category } from "@/types/categoryTypes";
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-function CategoryItem({ category }) {
+interface CategoryItemProps {
+  category: Category;
+}
+
+function CategoryItem({ category }: CategoryItemProps) {
   const pathname = usePathname();
 
   return (

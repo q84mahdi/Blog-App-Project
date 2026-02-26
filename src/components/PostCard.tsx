@@ -3,14 +3,21 @@ import CoverImage from "./CoverImage";
 import PostAuthor from "./PostAuthor";
 import PostReadingTime from "./PostReadingTime";
 import PostInteraction from "./PostInteraction";
-import { Post } from "@/types/postTypes";
+import { Post, RelatedPost } from "@/types/postTypes";
 
-interface PostCardProps {
+interface PostCardWithInteractions {
   post: Post;
-  hasInteractions?: boolean;
+  hasInteractions: true;
 }
 
-function PostCard({ post, hasInteractions = true }: PostCardProps) {
+interface PostCardWithoutInteractions {
+  post: Post | RelatedPost;
+  hasInteractions: false;
+}
+
+type PostCardProps = PostCardWithInteractions | PostCardWithoutInteractions;
+
+function PostCard({ post, hasInteractions }: PostCardProps) {
   return (
     <div
       className={`col-span-12 space-y-2 rounded-md border border-secondary-300 p-2 sm:col-span-6 ${hasInteractions ? "xl:col-span-4" : "md:col-span-4"}`}

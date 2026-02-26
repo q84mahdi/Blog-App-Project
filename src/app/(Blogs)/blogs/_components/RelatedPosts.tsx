@@ -1,6 +1,11 @@
 import PostCard from "@/components/PostCard";
+import { Post, RelatedPost } from "@/types/postTypes";
 
-function RelatedPosts({ posts }) {
+interface RelatedPostsProps {
+  posts: RelatedPost[];
+}
+
+function RelatedPosts({ posts }: RelatedPostsProps) {
   return (
     <div className="border-t border-dashed border-secondary-400 py-4">
       <h2 className="mb-4 text-xl font-bold text-secondary-700">

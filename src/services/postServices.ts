@@ -10,7 +10,7 @@ import { CreatePostResponse, Post } from "@/types/postTypes";
 /* ---------- Post API ---------- */
 
 export const getAllPostsApi = async (
-  queries: string,
+  queries?: string,
   options?: AxiosRequestConfig,
 ): Promise<PaginatedResponse<Post>> => {
   const res = await http.get<ApiResponse<PaginatedResponse<Post>>>(
@@ -22,7 +22,7 @@ export const getAllPostsApi = async (
 
 export const getPostBySlugApi = async (
   slug: string,
-  options: AxiosRequestConfig,
+  options?: AxiosRequestConfig,
 ): Promise<Post> => {
   const res = await http.get<ApiResponse<Post>>(`/post/slug/${slug}`, options);
   return res.data.data;

@@ -1,5 +1,6 @@
 import { User } from "./authTypes";
 import { Category } from "./categoryTypes";
+import { Comment } from "./commentTypes";
 
 /* ---------- Post ---------- */
 

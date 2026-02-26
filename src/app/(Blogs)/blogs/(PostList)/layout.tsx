@@ -1,9 +1,13 @@
-import { Suspense } from "react";
+import { ReactNode, Suspense } from "react";
 import Spinner from "@/ui/Spinner";
 import CategoryList from "../_components/CategoryList";
 import SearchBox from "@/ui/SearchBox";
 import SortButton from "@/ui/SortButton";
 import { getAllCategoriesApi } from "@/services/categoryServices";
+
+interface BlogsLayoutProps {
+  children: ReactNode;
+}
 
 export const metadata = {
   title: "بلاگ ها",
@@ -15,10 +19,10 @@ const sortItems = [
   { value: "popular", label: "پرطرفدارترین" },
   { value: "time_asc", label: "کوتاه‌ترین" },
   { value: "time_desc", label: "طولانی‌ترین" },
-];
+] as const;
 
-async function BlogsLayout({ children }) {
-  const { categories } = await getAllCategoriesApi();
+async function BlogsLayout({ children }: BlogsLayoutProps) {
+  const { data: categories } = await getAllCategoriesApi();
 
   return (
     <div className="mb-12 grid grid-cols-12 gap-8">

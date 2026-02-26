@@ -1,10 +1,12 @@
+import { ChangeEvent } from "react";
+
 interface TextAreaProps {
   label: string;
   name: string;
   value: string;
-  onChange: () => void;
+  onChange: (e: ChangeEvent<HTMLTextAreaElement, HTMLTextAreaElement>) => void;
   isRequired: boolean;
-  dir: "rtl" | "ltr";
+  dir?: "rtl" | "ltr";
 }
 
 function TextArea({

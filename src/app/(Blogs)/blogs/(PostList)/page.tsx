@@ -1,24 +1,27 @@
-import { getAllPostsApi } from "@/services/postServices";
-import Pagination from "@/ui/Pagination";
-import setCookiesOnReq from "@/utils/setCookiesOnReq";
-import { toPersianNumbers } from "@/utils/toPersianNumbers";
-import PostList from "app/(Blogs)/blogs/_components/PostList";
+import PostList from "../_components/PostList";
 import { cookies } from "next/headers";
+import setCookiesOnReq from "@/utils/setCookiesOnReq";
+import { getAllPostsApi } from "@/services/postServices";
 import queryString from "query-string";
+import { toPersianNumbers } from "@/utils/toPersianNumbers";
+import Pagination from "@/ui/Pagination";
+import { AxiosRequestConfig } from "axios";
 
 export const revalidate = 60;
 
-async function CategoryPage(props) {
-  const searchParams = await props.searchParams;
-  const params = await props.params;
-  const categoryQuery = `categorySlug=${params.categorySlug}`;
-  const queries = `${queryString.stringify(searchParams)}&${categoryQuery}`;
+interface BlogListPageProps {
+  searchParams: Promise<Record<string, any>>;
+}
+
+async function BlogListPage({ searchParams }: BlogListPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const queries = queryString.stringify(searchParams);
 
   const cookiesStore = await cookies();
-  const options = setCookiesOnReq(cookiesStore);
-  const { posts, totalPages } = await getAllPostsApi(queries, options);
+  const options = setCookiesOnReq(cookiesStore) as AxiosRequestConfig;
+  const { data: posts, total } = await getAllPostsApi(queries, options);
 
-  const { search } = searchParams;
+  const { search } = resolvedSearchParams;
 
   const searchMessage = search
     ? `${toPersianNumbers(posts.length)} نتیجه برای "${search}" یافت شد.`
@@ -30,7 +33,7 @@ async function CategoryPage(props) {
         <p className="mt-8 text-center text-lg font-bold text-secondary-600">
           {search
             ? `هیچ نتیجه ای برای "${search}" یافت نشد.`
-            : "پستی در این دسته بندی یافت نشد."}
+            : "پستی برای نشان دادن وجود ندارد."}
         </p>
       ) : (
         <div>
@@ -44,7 +47,7 @@ async function CategoryPage(props) {
 
           {posts && posts.length > 0 && (
             <div className="mt-8 flex items-center justify-center">
-              <Pagination totalPages={totalPages} />
+              <Pagination totalPages={total} />
             </div>
           )}
         </div>
@@ -52,4 +55,4 @@ async function CategoryPage(props) {
     </div>
   );
 }
-export default CategoryPage;
+export default BlogListPage;

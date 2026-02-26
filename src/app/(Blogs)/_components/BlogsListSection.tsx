@@ -46,7 +46,7 @@ function BlogsListSection({ queryParams, link, text }: BlogsListSectionProps) {
             className="group col-span-12 md:col-span-6 lg:col-span-3"
           >
             <div className="transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.03]">
-              <PostCard post={post} />
+              <PostCard post={post} hasInteractions />
             </div>
           </div>
         ))}

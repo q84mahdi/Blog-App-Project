@@ -4,8 +4,13 @@ import { usePathname } from "next/navigation";
 import CategoryItem from "./CategoryItem";
 import Link from "next/link";
 import classNames from "classnames";
+import { Category } from "@/types/categoryTypes";
 
-function CategoryList({ categories }) {
+interface CategoryListProps {
+  categories: Category[];
+}
+
+function CategoryList({ categories }: CategoryListProps) {
   const pathname = usePathname();
 
   return (

@@ -5,7 +5,7 @@ import { StaticImport } from "next/dist/shared/lib/get-img-props";
 interface PostAuthorProps {
   name: string;
   avatarUrl: string | StaticImport | undefined;
-  isTruncate: boolean;
+  isTruncate?: boolean;
 }
 
 function PostAuthor({ name, avatarUrl, isTruncate = false }: PostAuthorProps) {
