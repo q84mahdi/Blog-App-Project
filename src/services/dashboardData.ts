@@ -8,10 +8,11 @@ import {
 import { getAllCommentsApi } from "./commentServices";
 import { getAllPostsApi } from "./postServices";
 import setCookiesOnReq from "@/utils/setCookiesOnReq";
+import { AxiosRequestConfig } from "axios";
 
 export async function fetchAdminCardsData() {
   const cookiesStore = await cookies();
-  const options = setCookiesOnReq(cookiesStore);
+  const options = setCookiesOnReq(cookiesStore) as AxiosRequestConfig;
 
   try {
     const data = await Promise.all([
@@ -38,7 +39,7 @@ export async function fetchAdminCardsData() {
 
 export async function fetchUserCardsData() {
   const cookiesStore = await cookies();
-  const options = setCookiesOnReq(cookiesStore);
+  const options = setCookiesOnReq(cookiesStore) as AxiosRequestConfig;
 
   try {
     const data = await Promise.all([
