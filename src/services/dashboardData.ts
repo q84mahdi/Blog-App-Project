@@ -10,7 +10,11 @@ import { getAllPostsApi } from "./postServices";
 import setCookiesOnReq from "@/utils/setCookiesOnReq";
 import { AxiosRequestConfig } from "axios";
 
-export async function fetchAdminCardsData() {
+export async function fetchAdminCardsData(): Promise<{
+  numberOfUsers: number;
+  numberOfComments: number;
+  numberOfPosts: number;
+}> {
   const cookiesStore = await cookies();
   const options = setCookiesOnReq(cookiesStore) as AxiosRequestConfig;
 
@@ -35,9 +39,19 @@ export async function fetchAdminCardsData() {
       console.log(error.message);
     }
   }
+
+  return {
+    numberOfUsers: 0,
+    numberOfComments: 0,
+    numberOfPosts: 0,
+  };
 }
 
-export async function fetchUserCardsData() {
+export async function fetchUserCardsData(): Promise<{
+  numberOfBookmarks: number;
+  numberOfComments: number;
+  numberOfPosts: number;
+}> {
   const cookiesStore = await cookies();
   const options = setCookiesOnReq(cookiesStore) as AxiosRequestConfig;
 
@@ -64,4 +78,10 @@ export async function fetchUserCardsData() {
       console.log(error.message);
     }
   }
+
+  return {
+    numberOfBookmarks: 0,
+    numberOfComments: 0,
+    numberOfPosts: 0,
+  };
 }

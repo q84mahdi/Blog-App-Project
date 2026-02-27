@@ -16,7 +16,7 @@ import classNames from "classnames";
 import { SidebarNavType } from "./PanelHeader";
 
 interface PanelSidebarProps {
-  onClose: () => void;
+  onClose?: () => void;
   sidebarNavs: SidebarNavType[];
 }
 

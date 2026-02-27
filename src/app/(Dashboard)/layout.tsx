@@ -4,12 +4,15 @@ import {
   DocumentTextIcon,
   HeartIcon,
   RectangleGroupIcon,
-  Squares2X2Icon,
-  UserGroupIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
 import PanelSidebar from "@/components/PanelSidebar";
 import PanelHeader from "@/components/PanelHeader";
+import { ReactNode } from "react";
+
+interface ProfileLayoutProps {
+  children: ReactNode;
+}
 
 export const metadata = {
   title: "پروفایل",
@@ -49,7 +52,7 @@ const sidebarNavs = [
   },
 ];
 
-function ProfileLayout({ children }) {
+function ProfileLayout({ children }: ProfileLayoutProps) {
   return (
     <div className="grid h-screen grid-cols-12 bg-secondary-0">
       {/* Sidebar */}
