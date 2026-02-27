@@ -3,6 +3,7 @@ import http from "./httpServices";
 import { ApiResponse, EmptyResponse } from "@/types/globalTypes";
 import {
   ChangeStatusCommentRequest,
+  CommentStatus,
   CreateCommentRequest,
   GetAllCommentsResponse,
 } from "@/types/commentTypes";
@@ -33,7 +34,7 @@ export const getAllCommentsApi = async (
 };
 
 export const deleteCommentApi = async (
-  commentId: number,
+  commentId: string,
 ): Promise<EmptyResponse> => {
   const res = await http.delete<ApiResponse<EmptyResponse>>(
     `/comment/remove/${commentId}`,
@@ -41,13 +42,13 @@ export const deleteCommentApi = async (
   return res.data.data;
 };
 
-export const changeStatusCommentApi = async (
-  commentId: number,
-  data: ChangeStatusCommentRequest,
-): Promise<EmptyResponse> => {
+export const changeStatusCommentApi = async ({
+  commentId,
+  data,
+}: ChangeStatusCommentRequest): Promise<EmptyResponse> => {
   const res = await http.patch<
     ApiResponse<EmptyResponse>,
-    ChangeStatusCommentRequest
+    { status: CommentStatus }
   >(`/comment/update/${commentId}`, data);
   return res.data.data;
 };

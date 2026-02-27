@@ -1,11 +1,16 @@
 import { deleteCommentApi } from "@/services/commentServices";
+import { EmptyResponse } from "@/types/globalTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 export default function useDeleteComment() {
   const queryClient = useQueryClient();
 
-  const { isPending: isDeleting, mutate: deleteComment } = useMutation({
+  const { isPending: isDeleting, mutate: deleteComment } = useMutation<
+    EmptyResponse,
+    Error,
+    string
+  >({
     mutationFn: deleteCommentApi,
 
     onSuccess: (data) => {
@@ -21,7 +26,9 @@ export default function useDeleteComment() {
     },
 
     onError: (err) => {
-      toast.error(err?.response?.data?.message || "حذف نظر با خطا مواجه شد");
+      const message =
+        err instanceof Error ? err.message : "حذف نظر با خطا مواجه شد";
+      toast.error(message);
     },
   });
 

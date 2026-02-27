@@ -3,6 +3,12 @@ import dateFormatter from "@/utils/dateFormatter";
 import { toPersianNumbers } from "@/utils/toPersianNumbers";
 import truncateText from "@/utils/truncateText";
 import { DeleteComment } from "./Buttons";
+import { Comment } from "@/types/commentTypes";
+
+interface CommentRowProps {
+  comment: Comment;
+  index: number;
+}
 
 const statusStyles = [
   {
@@ -21,7 +27,7 @@ const statusStyles = [
   },
 ];
 
-function CommentRow({ comment, index }) {
+function CommentRow({ comment, index }: CommentRowProps) {
   const { content, post, answers, createdAt, status } = comment;
 
   return (

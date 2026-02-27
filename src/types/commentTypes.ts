@@ -13,7 +13,10 @@ export interface CreateCommentRequest {
 }
 
 export interface ChangeStatusCommentRequest {
-  status: CommentStatus;
+  commentId: string;
+  data: {
+    status: CommentStatus;
+  };
 }
 
 export type GetAllCommentsResponse = PaginatedResponse<Comment> & {

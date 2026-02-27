@@ -8,12 +8,19 @@ import {
   PencilSquareIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import useDeleteComment from "../_hooks/useDeleteComment";
 import useChangeStatusComment from "../_hooks/useChangeStatusComment";
+import { Comment, CommentStatus } from "@/types/commentTypes";
 
-// Used in user and admin panel
+// ---------- Used in user and admin panel ----------
+
+interface DeleteCommentProps {
+  comment: Comment;
+  isAdmin?: boolean;
+}
+
 export function DeleteComment({
   comment: {
     _id,
@@ -21,7 +28,7 @@ export function DeleteComment({
     user: { name },
   },
   isAdmin = false,
-}) {
+}: DeleteCommentProps) {
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
@@ -32,7 +39,7 @@ export function DeleteComment({
     <>
       <ButtonIcon
         className="border-none !text-error hover:!text-error lg:!text-inherit"
-        varient="outline"
+        variant="outline"
         onClick={() => setOpen(true)}
       >
         <TrashIcon />
@@ -52,7 +59,7 @@ export function DeleteComment({
 
             deleteComment(_id, {
               onSuccess: () => {
-                router.refresh("/profile/comments");
+                router.refresh();
                 setOpen(false);
               },
             });
@@ -63,20 +70,27 @@ export function DeleteComment({
   );
 }
 
-// Just used in admin panel
+// ---------- Just used in admin panel ----------
+
+interface ChangeStatusCommentProps {
+  comment: Comment;
+}
+
 export function ChangeStatusComment({
   comment: {
     _id,
     status,
     user: { name },
   },
-}) {
+}: ChangeStatusCommentProps) {
   const [open, setOpen] = useState(false);
 
   const { changeStatus } = useChangeStatusComment();
 
-  const handleChangeStatus = (e) => {
-    const status = e.target.value;
+  const handleChangeStatus = (
+    e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>,
+  ) => {
+    const status = Number(e.target.value) as CommentStatus;
 
     changeStatus(
       { commentId: _id, data: { status } },
@@ -92,7 +106,7 @@ export function ChangeStatusComment({
     <>
       <ButtonIcon
         className="border-none !text-success hover:!text-success lg:!text-inherit"
-        varient="outline"
+        variant="outline"
         onClick={() => setOpen(true)}
       >
         <PencilSquareIcon />

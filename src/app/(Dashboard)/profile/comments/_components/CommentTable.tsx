@@ -7,12 +7,17 @@ import Pagination from "@/ui/Pagination";
 import Table from "@/ui/Table";
 import CommentRow from "./CommentRow";
 
-function CommentTable({ queries, hasPagination = false }) {
-  const { isLoading, comments, totalPages } = useGetUserComments(queries);
+interface CommentTableProps {
+  queries: string;
+  hasPagination?: boolean;
+}
+
+function CommentTable({ queries, hasPagination = false }: CommentTableProps) {
+  const { isLoading, data } = useGetUserComments(queries);
+  const comments = data?.data;
 
   if (isLoading) return <Fallback />;
-
-  if (comments.length === 0) return <Empty resourceName="نظری" />;
+  if (!comments || comments.length === 0) return <Empty resourceName="نظری" />;
 
   return (
     <div>
@@ -36,7 +41,7 @@ function CommentTable({ queries, hasPagination = false }) {
 
       {hasPagination && comments && comments.length > 0 && (
         <div className="mt-5 flex w-full items-center justify-center">
-          <Pagination totalPages={totalPages} />
+          <Pagination totalPages={data.total} />
         </div>
       )}
     </div>

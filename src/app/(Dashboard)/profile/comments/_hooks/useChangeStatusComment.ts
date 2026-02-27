@@ -1,11 +1,17 @@
 import { changeStatusCommentApi } from "@/services/commentServices";
+import { ChangeStatusCommentRequest } from "@/types/commentTypes";
+import { EmptyResponse } from "@/types/globalTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 export default function useChangeStatusComment() {
   const queryClient = useQueryClient();
 
-  const { isPending: isChanging, mutate: changeStatus } = useMutation({
+  const { isPending: isChanging, mutate: changeStatus } = useMutation<
+    EmptyResponse,
+    Error,
+    ChangeStatusCommentRequest
+  >({
     mutationFn: changeStatusCommentApi,
 
     onSuccess: (data) => {
@@ -17,9 +23,9 @@ export default function useChangeStatusComment() {
     },
 
     onError: (err) => {
-      toast.error(
-        err?.response?.data?.message || "تغییر وضعیت نظر با خطا مواجه شد",
-      );
+      const message =
+        err instanceof Error ? err.message : "تغییر وضعیت نظر با خطا مواجه شد";
+      toast.error(message);
     },
   });
 
