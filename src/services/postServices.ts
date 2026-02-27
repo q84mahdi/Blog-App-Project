@@ -29,7 +29,7 @@ export const getPostBySlugApi = async (
 };
 
 export const getPostByIdApi = async (
-  postId: number,
+  postId: string,
   options?: AxiosRequestConfig,
 ): Promise<Post> => {
   const res = await http.get<ApiResponse<Post>>(`/post/${postId}`, options);

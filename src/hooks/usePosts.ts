@@ -18,7 +18,7 @@ export function useGetUserPosts(queries = "") {
   });
 }
 
-export function useGetPostById(postId: number) {
+export function useGetPostById(postId: string) {
   return useQuery<Post>({
     queryKey: ["post", postId],
     queryFn: () => getPostByIdApi(postId),

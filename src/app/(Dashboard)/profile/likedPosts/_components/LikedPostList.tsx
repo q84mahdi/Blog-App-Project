@@ -1,13 +1,13 @@
 "use client";
 
 import PostCard from "@/components/PostCard";
+import { useAuth } from "@/contexts/AuthContext";
 import { useGetPostById } from "@/hooks/usePosts";
-import { useGetUser } from "@/hooks/useUsers";
 import Empty from "@/ui/Empty";
 import Fallback from "@/ui/Fallback";
 
 function LikedPostList() {
-  const { isLoading, user } = useGetUser();
+  const { isLoading, user } = useAuth();
 
   if (isLoading) return <Fallback />;
 
@@ -25,10 +25,14 @@ function LikedPostList() {
 
 export default LikedPostList;
 
-function LikedPostItem({ postId }) {
-  const { isLoading, post } = useGetPostById(postId);
+interface LikedPostItemProps {
+  postId: string;
+}
 
-  if (isLoading) return null;
+function LikedPostItem({ postId }: LikedPostItemProps) {
+  const { isLoading, data: post } = useGetPostById(postId);
+
+  if (isLoading || !post) return null;
 
   return <PostCard key={post._id} post={post} hasInteractions={false} />;
 }
