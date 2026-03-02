@@ -7,10 +7,16 @@ import Table from "@/ui/Table";
 import Pagination from "@/ui/Pagination";
 import CategoryRow from "./CategoryRow";
 
-function CategoryTable({ queries, hasPagination = false }) {
-  const { isLoading, rawCategories, totalPages } = useGetCategories(queries);
+interface CategoryTableProps {
+  queries: string;
+  hasPagination?: boolean;
+}
 
-  if (isLoading) return <Fallback />;
+function CategoryTable({ queries, hasPagination = false }: CategoryTableProps) {
+  const { isLoading, data } = useGetCategories(queries);
+  const rawCategories = data?.data;
+
+  if (!rawCategories || isLoading) return <Fallback />;
 
   if (rawCategories.length === 0) return <Empty resourceName="دسته‌بندی‌ ای" />;
 
@@ -35,7 +41,7 @@ function CategoryTable({ queries, hasPagination = false }) {
 
       {hasPagination && rawCategories && rawCategories.length > 0 && (
         <div className="mt-5 flex w-full items-center justify-center">
-          <Pagination totalPages={totalPages} />
+          <Pagination totalPages={data.total} />
         </div>
       )}
     </div>

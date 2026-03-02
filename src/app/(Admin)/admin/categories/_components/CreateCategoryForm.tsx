@@ -10,6 +10,17 @@ import RHFTextarea from "@/ui/RHFTextarea";
 import toast from "react-hot-toast";
 import useCreateCategory from "../_hooks/useCreateCategory";
 import useEditCategory from "../_hooks/useEditCategory";
+import { Category } from "@/types/categoryTypes";
+
+interface CreateCategoryFormProps {
+  categoryToEdit?: Category;
+}
+
+interface CreateCategoryValues {
+  title: string;
+  englishTitle: string;
+  description: string;
+}
 
 const schema = yup.object({
   title: yup
@@ -35,7 +46,9 @@ const schema = yup.object({
     .min(10, "توضیحات باید حداقل ۱۰ کاراکتر باشد"),
 });
 
-function CreateCategoryForm({ categoryToEdit = {} }) {
+function CreateCategoryForm({
+  categoryToEdit = {} as Category,
+}: CreateCategoryFormProps) {
   const editId = categoryToEdit._id;
   const isEditMode = Boolean(editId);
   const { title, englishTitle, description } = categoryToEdit;
@@ -59,13 +72,13 @@ function CreateCategoryForm({ categoryToEdit = {} }) {
     handleSubmit,
     reset,
     formState: { errors, isDirty },
-  } = useForm({
+  } = useForm<CreateCategoryValues>({
     resolver: yupResolver(schema),
     mode: "onTouched",
     defaultValues: editValues,
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: CreateCategoryValues) => {
     if (!isDirty) return toast.error("لطفا یکی از فیلد ها را تغییر دهید");
 
     if (isEditMode) {

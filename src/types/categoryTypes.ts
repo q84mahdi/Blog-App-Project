@@ -6,6 +6,11 @@ export interface CreateCategoryRequest {
   description: string;
 }
 
+export interface EditCategoryRequest {
+  categoryId: string;
+  data: CreateCategoryRequest;
+}
+
 export interface Category {
   _id: string;
   title: string;

@@ -3,8 +3,14 @@ import { DeleteCategory, UpdateCategory } from "./Buttons";
 import dateFormatter from "@/utils/dateFormatter";
 import Table from "@/ui/Table";
 import { toPersianNumbers } from "@/utils/toPersianNumbers";
+import { Category } from "@/types/categoryTypes";
 
-function CategoryRow({ category, index }) {
+interface CategoryRowProps {
+  category: Category;
+  index: number;
+}
+
+function CategoryRow({ category, index }: CategoryRowProps) {
   const { title, englishTitle, description, createdAt } = category;
 
   return (

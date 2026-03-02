@@ -6,9 +6,13 @@ import { Suspense } from "react";
 import CategoryTable from "./_components/CategoryTable";
 import { CreateCategory } from "./_components/Buttons";
 
-async function CategoriesListPage(props) {
-  const searchParams = await props.searchParams;
-  const queries = queryString.stringify(searchParams);
+interface CategoriesListPageProps {
+  searchParams: Promise<Record<string, any>>;
+}
+
+async function CategoriesListPage({ searchParams }: CategoriesListPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const queries = queryString.stringify(resolvedSearchParams);
 
   return (
     <div>

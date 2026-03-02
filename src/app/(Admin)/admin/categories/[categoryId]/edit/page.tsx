@@ -4,17 +4,18 @@ import { getAllCategoriesApi } from "@/services/categoryServices";
 import CreateCategoryForm from "../../_components/CreateCategoryForm";
 import { cookies } from "next/headers";
 import setCookiesOnReq from "@/utils/setCookiesOnReq";
+import { AxiosRequestConfig } from "axios";
 
-async function EditCategoryPage(props) {
-  const params = await props.params;
+interface EditCategoryPageProps {
+  params: Promise<{ categoryId: string }>;
+}
 
-  const {
-    categoryId
-  } = params;
+async function EditCategoryPage({ params }: EditCategoryPageProps) {
+  const { categoryId } = await params;
 
   const cookiesStore = await cookies();
-  const options = setCookiesOnReq(cookiesStore);
-  const { categories } = await getAllCategoriesApi("", options);
+  const options = setCookiesOnReq(cookiesStore) as AxiosRequestConfig;
+  const { data: categories } = await getAllCategoriesApi("", options);
 
   const category = categories.find((category) => category._id === categoryId);
 

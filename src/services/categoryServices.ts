@@ -5,7 +5,11 @@ import {
   EmptyResponse,
   PaginatedResponse,
 } from "@/types/globalTypes";
-import { Category, CreateCategoryRequest } from "@/types/categoryTypes";
+import {
+  Category,
+  CreateCategoryRequest,
+  EditCategoryRequest,
+} from "@/types/categoryTypes";
 
 /* ---------- Category API ---------- */
 
@@ -21,7 +25,7 @@ export const getAllCategoriesApi = async (
 };
 
 export const deleteCategoryApi = async (
-  categoryId: number,
+  categoryId: string,
 ): Promise<EmptyResponse> => {
   const res = await http.delete<ApiResponse<EmptyResponse>>(
     `/category/remove/${categoryId}`,
@@ -39,10 +43,10 @@ export const createCategoryApi = async (
   return res.data.data;
 };
 
-export const editCategoryApi = async (
-  categoryId: number,
-  data: CreateCategoryRequest,
-): Promise<EmptyResponse> => {
+export const editCategoryApi = async ({
+  categoryId,
+  data,
+}: EditCategoryRequest): Promise<EmptyResponse> => {
   const res = await http.patch<
     ApiResponse<EmptyResponse>,
     CreateCategoryRequest

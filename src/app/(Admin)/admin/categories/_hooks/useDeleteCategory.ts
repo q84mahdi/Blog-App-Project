@@ -1,11 +1,16 @@
 import { deleteCategoryApi } from "@/services/categoryServices";
+import { EmptyResponse } from "@/types/globalTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 export default function useDeleteCategory() {
   const queryClient = useQueryClient();
 
-  const { isPending: isDeleting, mutate: deleteCategory } = useMutation({
+  const { isPending: isDeleting, mutate: deleteCategory } = useMutation<
+    EmptyResponse,
+    Error,
+    string
+  >({
     mutationFn: deleteCategoryApi,
 
     onSuccess: (data) => {
@@ -17,7 +22,9 @@ export default function useDeleteCategory() {
     },
 
     onError: (err) => {
-      toast.error(err?.response?.data?.message || "حذف دسته‌بندی با خطا مواجه شد");
+      const message =
+        err instanceof Error ? err.message : "حذف دسته‌بندی با خطا مواجه شد";
+      toast.error(message);
     },
   });
 
