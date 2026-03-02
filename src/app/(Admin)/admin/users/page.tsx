@@ -5,9 +5,13 @@ import queryString from "query-string";
 import { Suspense } from "react";
 import UserTable from "./_components/UserTable";
 
-async function UsersListPage(props) {
-  const searchParams = await props.searchParams;
-  const queries = queryString.stringify(searchParams);
+interface UsersListPage {
+  searchParams: Promise<Record<string, any>>;
+}
+
+async function UsersListPage({ searchParams }: UsersListPage) {
+  const resolvedSearchParams = await searchParams;
+  const queries = queryString.stringify(resolvedSearchParams);
 
   return (
     <div>

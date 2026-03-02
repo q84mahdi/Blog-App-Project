@@ -1,8 +1,14 @@
+import { User } from "@/types/authTypes";
 import Table from "@/ui/Table";
 import dateFormatter from "@/utils/dateFormatter";
 import { toPersianNumbers } from "@/utils/toPersianNumbers";
 
-function UserRow({ user, index }) {
+interface UserRowProps {
+  user: User;
+  index: number;
+}
+
+function UserRow({ user, index }: UserRowProps) {
   const { name, email, createdAt } = user;
 
   return (

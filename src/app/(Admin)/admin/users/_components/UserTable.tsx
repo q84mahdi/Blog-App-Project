@@ -7,10 +7,16 @@ import Table from "@/ui/Table";
 import UserRow from "./UserRow";
 import Pagination from "@/ui/Pagination";
 
-function UserTable({ queries, hasPagination = false }) {
-  const { isLoading, users, totalPages } = useGetUsers(queries);
+interface UserTableProps {
+  queries: string;
+  hasPagination?: boolean;
+}
 
-  if (isLoading) return <Fallback />;
+function UserTable({ queries, hasPagination = false }: UserTableProps) {
+  const { isLoading, data } = useGetUsers(queries);
+  const users = data?.data;
+
+  if (!users || isLoading) return <Fallback />;
 
   if (users.length === 0) return <Empty resourceName="کاربری" />;
 
@@ -34,7 +40,7 @@ function UserTable({ queries, hasPagination = false }) {
 
       {hasPagination && users && users.length > 0 && (
         <div className="mt-5 flex w-full items-center justify-center">
-          <Pagination totalPages={totalPages} />
+          <Pagination totalPages={data.total} />
         </div>
       )}
     </div>
