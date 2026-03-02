@@ -7,11 +7,16 @@ import {
 } from "@heroicons/react/24/outline";
 import PanelSidebar from "@/components/PanelSidebar";
 import PanelHeader from "@/components/PanelHeader";
+import { ReactNode } from "react";
 
 export const metadata = {
   title: "پنل ادمین",
   discription: "پنل مدیریت ادمین",
 };
+
+interface AdminLayoutProps {
+  children: ReactNode;
+}
 
 const sidebarNavs = [
   {
@@ -41,7 +46,7 @@ const sidebarNavs = [
   },
 ];
 
-function ProfileLayout({ children }) {
+function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <div className="grid h-screen grid-cols-12 bg-secondary-0">
       {/* Sidebar */}
@@ -62,4 +67,4 @@ function ProfileLayout({ children }) {
     </div>
   );
 }
-export default ProfileLayout;
+export default AdminLayout;
