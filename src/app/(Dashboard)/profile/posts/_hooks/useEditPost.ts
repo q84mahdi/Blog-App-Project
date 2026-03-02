@@ -1,11 +1,16 @@
 import { editPostApi } from "@/services/postServices";
+import { CreatePostResponse, EditPostRequest } from "@/types/postTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 export default function useEditPost() {
   const queryClient = useQueryClient();
 
-  const { isPending: isEditing, mutate: editPost } = useMutation({
+  const { isPending: isEditing, mutate: editPost } = useMutation<
+    CreatePostResponse,
+    Error,
+    EditPostRequest
+  >({
     mutationFn: editPostApi,
 
     onSuccess: (data) => {
@@ -16,7 +21,9 @@ export default function useEditPost() {
     },
 
     onError: (err) => {
-      toast.error(err?.response?.data?.message || "ویرایش پست با خطا مواجه شد");
+      const message =
+        err instanceof Error ? err.message : "ویرایش پست با خطا مواجه شد";
+      toast.error(message);
     },
   });
 

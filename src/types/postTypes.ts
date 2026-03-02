@@ -4,6 +4,11 @@ import { Comment } from "./commentTypes";
 
 /* ---------- Post ---------- */
 
+export interface EditPostRequest {
+  id: string;
+  postData: FormData;
+}
+
 export type PostType = "free" | "premium";
 
 export interface CreatePostResponse {

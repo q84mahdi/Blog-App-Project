@@ -5,7 +5,7 @@ import {
   EmptyResponse,
   PaginatedResponse,
 } from "@/types/globalTypes";
-import { CreatePostResponse, Post } from "@/types/postTypes";
+import { CreatePostResponse, EditPostRequest, Post } from "@/types/postTypes";
 
 /* ---------- Post API ---------- */
 
@@ -62,10 +62,10 @@ export const createPostApi = async (
   return res.data.data;
 };
 
-export const editPostApi = async (
-  id: number,
-  postData: FormData,
-): Promise<CreatePostResponse> => {
+export const editPostApi = async ({
+  id,
+  postData,
+}: EditPostRequest): Promise<CreatePostResponse> => {
   const res = await http.patch<ApiResponse<CreatePostResponse>, FormData>(
     `/post/update/${id}`,
     postData,

@@ -18,6 +18,21 @@ import useCreatePost from "../_hooks/useCreatePost";
 import useEditPost from "../_hooks/useEditPost";
 import RHFTextarea from "@/ui/RHFTextarea";
 import toast from "react-hot-toast";
+import { Post } from "@/types/postTypes";
+
+interface CreatePostFormProps {
+  postToEdit?: Post;
+}
+
+interface CreatePostValues {
+  title: string;
+  briefText: string;
+  text: string;
+  slug: string;
+  readingTime: number;
+  category: string;
+  coverImage: File;
+}
 
 const schema = yup.object({
   title: yup
@@ -47,10 +62,8 @@ const schema = yup.object({
   category: yup.string().required("دسته بندی الزامی است"),
 
   coverImage: yup
-    .mixed()
-    .test("required", "کاور پست الزامی است", (value) => {
-      return value;
-    })
+    .mixed<File>()
+    .required("کاور پست الزامی است")
     .test("fileSize", "حجم فایل باید کمتر از 2 مگابایت باشد", (value) => {
       return value && value.size <= 2 * 1024 * 1024;
     })
@@ -61,7 +74,7 @@ const schema = yup.object({
     }),
 });
 
-function CreatePostForm({ postToEdit = {} }) {
+function CreatePostForm({ postToEdit = {} as Post }: CreatePostFormProps) {
   const editId = postToEdit._id;
   const isEditMode = Boolean(editId);
   const {
@@ -79,7 +92,7 @@ function CreatePostForm({ postToEdit = {} }) {
 
   const router = useRouter();
 
-  const { categories } = useGetCategories();
+  const { data } = useGetCategories();
 
   const { isCreating, createPost } = useCreatePost();
   const { isEditing, editPost } = useEditPost();
@@ -103,8 +116,9 @@ function CreatePostForm({ postToEdit = {} }) {
     handleSubmit,
     reset,
     setValue,
+    resetField,
     formState: { errors, isDirty },
-  } = useForm({
+  } = useForm<CreatePostValues>({
     resolver: yupResolver(schema),
     mode: "onTouched",
     defaultValues: editValues,
@@ -121,14 +135,18 @@ function CreatePostForm({ postToEdit = {} }) {
     }
   }, [editId]);
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: CreatePostValues) => {
     if (!isDirty) return toast.error("لطفا یکی از فیلد ها را تغییر دهید");
 
     const formData = new FormData();
 
-    for (const key in data) {
-      formData.append(key, data[key]);
-    }
+    formData.append("title", data.title);
+    formData.append("briefText", data.briefText);
+    formData.append("text", data.text);
+    formData.append("slug", data.slug);
+    formData.append("readingTime", data.readingTime.toString());
+    formData.append("category", data.category);
+    formData.append("coverImage", data.coverImage);
 
     if (isEditMode) {
       editPost(
@@ -164,14 +182,16 @@ function CreatePostForm({ postToEdit = {} }) {
       />
 
       {/* Category Select Input */}
-      <RHFSelect
-        name="category"
-        label="دسته بندی"
-        register={register}
-        errors={errors}
-        isRequired
-        options={categories}
-      />
+      {data?.categories && (
+        <RHFSelect
+          name="category"
+          label="دسته بندی"
+          register={register}
+          errors={errors}
+          isRequired
+          options={data.categories}
+        />
+      )}
 
       {/* Slug Input */}
       <RHFTextField
@@ -219,14 +239,13 @@ function CreatePostForm({ postToEdit = {} }) {
           render={({ field: { value, onChange, ...rest } }) => (
             <FileInput
               label="انتخاب کاور پست"
-              name="coverPost"
-              value={value?.fileName}
+              value={value.name}
               errors={errors}
               onChange={(event) => {
-                const file = event.target.files[0];
+                const file = event.target.files ? event.target.files[0] : null;
                 onChange(file);
-                setCoverImageUrl(URL.createObjectURL(file));
-                event.target.value = null;
+                setCoverImageUrl(file ? URL.createObjectURL(file) : null);
+                event.target.value = "";
               }}
               {...rest}
             />
@@ -244,11 +263,11 @@ function CreatePostForm({ postToEdit = {} }) {
             />
 
             <ButtonIcon
-              varient="red"
+              variant="red"
               className="absolute bottom-2 left-2"
               onClick={() => {
                 setCoverImageUrl(null);
-                setValue("coverImage", null);
+                resetField("coverImage");
               }}
             >
               <TrashIcon />

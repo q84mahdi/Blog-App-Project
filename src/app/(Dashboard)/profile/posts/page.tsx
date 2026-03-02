@@ -6,9 +6,13 @@ import { CreatePost } from "./_components/Buttons";
 import queryString from "query-string";
 import SortButton from "@/ui/SortButton";
 
-async function UserPostsPage(props) {
-  const searchParams = await props.searchParams;
-  const queries = queryString.stringify(searchParams);
+interface UserPostsPageProps {
+  searchParams: Promise<Record<string, any>>;
+}
+
+async function UserPostsPage({ searchParams }: UserPostsPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const queries = queryString.stringify(resolvedSearchParams);
 
   return (
     <div>

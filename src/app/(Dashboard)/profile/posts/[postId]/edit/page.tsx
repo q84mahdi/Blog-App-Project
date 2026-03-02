@@ -3,14 +3,14 @@ import { getPostByIdApi } from "@/services/postServices";
 import { notFound } from "next/navigation";
 import CreatePostForm from "../../_components/CreatePostForm";
 
-async function EditPostPage(props) {
-  const params = await props.params;
+interface EditPostPageProps {
+  params: Promise<{ postId: string }>;
+}
 
-  const {
-    postId
-  } = params;
+async function EditPostPage({ params }: EditPostPageProps) {
+  const { postId } = await params;
 
-  const { post } = await getPostByIdApi(postId);
+  const post = await getPostByIdApi(postId);
 
   if (!post) {
     notFound();

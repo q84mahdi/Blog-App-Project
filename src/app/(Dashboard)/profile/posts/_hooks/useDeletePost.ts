@@ -1,11 +1,16 @@
 import { deletePostApi } from "@/services/postServices";
+import { EmptyResponse } from "@/types/globalTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 export default function useDeletePost() {
   const queryClient = useQueryClient();
 
-  const { isPending: isDeleting, mutate: deletePost } = useMutation({
+  const { isPending: isDeleting, mutate: deletePost } = useMutation<
+    EmptyResponse,
+    Error,
+    string
+  >({
     mutationFn: deletePostApi,
 
     onSuccess: (data) => {
@@ -21,7 +26,9 @@ export default function useDeletePost() {
     },
 
     onError: (err) => {
-      toast.error(err?.response?.data?.message || "حذف پست با خطا مواجه شد");
+      const message =
+        err instanceof Error ? err.message : "حذف پست با خطا مواجه شد";
+      toast.error(message);
     },
   });
 

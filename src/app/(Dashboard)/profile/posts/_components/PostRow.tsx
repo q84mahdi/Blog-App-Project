@@ -3,6 +3,12 @@ import dateFormatter from "@/utils/dateFormatter";
 import { toPersianNumbers } from "@/utils/toPersianNumbers";
 import truncateText from "@/utils/truncateText";
 import { DeletePost, UpdatePost } from "./Buttons";
+import { Post } from "@/types/postTypes";
+
+interface PostRowProps {
+  post: Post;
+  index: number;
+}
 
 const typeStyles = {
   free: {
@@ -16,7 +22,7 @@ const typeStyles = {
   },
 };
 
-function PostRow({ post, index }) {
+function PostRow({ post, index }: PostRowProps) {
   const { title, category, readingTime, createdAt, type } = post;
 
   return (
