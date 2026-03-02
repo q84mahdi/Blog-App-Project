@@ -1,3 +1,4 @@
+import { Comment } from "@/types/commentTypes";
 import Table from "@/ui/Table";
 import dateFormatter from "@/utils/dateFormatter";
 import { toPersianNumbers } from "@/utils/toPersianNumbers";
@@ -6,6 +7,11 @@ import {
   ChangeStatusComment,
   DeleteComment,
 } from "app/(Dashboard)/profile/comments/_components/Buttons";
+
+interface CommentRowProps {
+  comment: Comment;
+  index: number;
+}
 
 const statusStyles = [
   {
@@ -24,7 +30,7 @@ const statusStyles = [
   },
 ];
 
-function CommentRow({ comment, index }) {
+function CommentRow({ comment, index }: CommentRowProps) {
   const { content, post, user, createdAt, status } = comment;
 
   return (
@@ -47,7 +53,7 @@ function CommentRow({ comment, index }) {
 
       <td>
         <div className="flex items-center justify-center gap-x-1">
-          <ChangeStatusComment comment={comment} isAdmin />
+          <ChangeStatusComment comment={comment} />
 
           <DeleteComment comment={comment} isAdmin />
         </div>

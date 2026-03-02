@@ -5,9 +5,13 @@ import queryString from "query-string";
 import { Suspense } from "react";
 import CommentTable from "./_components/CommentTable";
 
-async function CommentsListPage(props) {
-  const searchParams = await props.searchParams;
-  const queries = queryString.stringify(searchParams);
+interface CommentsListPageProps {
+  searchParams: Promise<Record<string, any>>;
+}
+
+async function CommentsListPage({ searchParams }: CommentsListPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const queries = queryString.stringify(resolvedSearchParams);
 
   return (
     <div>
