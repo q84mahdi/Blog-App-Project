@@ -1,12 +1,17 @@
 import Avatar from "@/ui/Avatar";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import useUpdateAvatar from "../_hooks/useUpdateAvatar";
+import { ChangeEvent } from "react";
 
-function UserAvatar({ avatarUrl }) {
+interface UserAvatarProps {
+  avatarUrl: string | null;
+}
+
+function UserAvatar({ avatarUrl }: UserAvatarProps) {
   const { isUpdating, updateAvatar } = useUpdateAvatar();
 
-  const handleAvatarChange = (event) => {
-    const file = event.target.files[0];
+  const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
     if (!file) return;
 
     const formData = new FormData();
@@ -14,12 +19,12 @@ function UserAvatar({ avatarUrl }) {
 
     updateAvatar(formData);
 
-    event.target.value = null;
+    e.target.value = "";
   };
 
   return (
     <div className="relative">
-      <Avatar src={avatarUrl} size={360} />
+      <Avatar src={avatarUrl || undefined} size={360} />
 
       <label
         htmlFor="avatar"

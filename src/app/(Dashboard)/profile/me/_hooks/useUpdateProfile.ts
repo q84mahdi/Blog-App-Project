@@ -1,11 +1,17 @@
 import { updateUserProfile } from "@/services/authServices";
+import { UpdateProfileRequest } from "@/types/authTypes";
+import { EmptyResponse } from "@/types/globalTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 export default function useUpdateProfile() {
   const queryClient = useQueryClient();
 
-  const { isPending: isUpdating, mutate: updateProfile } = useMutation({
+  const { isPending: isUpdating, mutate: updateProfile } = useMutation<
+    EmptyResponse,
+    Error,
+    UpdateProfileRequest
+  >({
     mutationFn: updateUserProfile,
 
     onSuccess: (data) => {
@@ -16,9 +22,9 @@ export default function useUpdateProfile() {
     },
 
     onError: (err) => {
-      toast.error(
-        err?.response?.data?.message || "ویرایش اطلاعات با خطا مواجه شد",
-      );
+      const message =
+        err instanceof Error ? err.message : "ویرایش اطلاعات با خطا مواجه شد";
+      toast.error(message);
     },
   });
 

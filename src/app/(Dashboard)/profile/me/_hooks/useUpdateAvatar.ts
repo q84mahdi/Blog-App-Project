@@ -1,11 +1,16 @@
 import { updateUserAvatar } from "@/services/authServices";
+import { EmptyResponse } from "@/types/globalTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 export default function useUpdateAvatar() {
   const queryClient = useQueryClient();
 
-  const { isPending: isUpdating, mutate: updateAvatar } = useMutation({
+  const { isPending: isUpdating, mutate: updateAvatar } = useMutation<
+    EmptyResponse,
+    Error,
+    FormData
+  >({
     mutationFn: updateUserAvatar,
 
     onSuccess: (data) => {
@@ -16,9 +21,11 @@ export default function useUpdateAvatar() {
     },
 
     onError: (err) => {
-      toast.error(
-        err?.response?.data?.message || "ویرایش عکس پروفایل با خطا مواجه شد",
-      );
+      const message =
+        err instanceof Error
+          ? err.message
+          : "ویرایش عکس پروفایل با خطا مواجه شد";
+      toast.error(message);
     },
   });
 

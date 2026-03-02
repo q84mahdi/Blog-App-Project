@@ -1,14 +1,14 @@
 "use client";
 
-import { useGetUser } from "@/hooks/useUsers";
 import UserAvatar from "./UserAvatar";
 import UserInfoForm from "./UserInfoForm";
 import Fallback from "@/ui/Fallback";
+import { useAuth } from "@/contexts/AuthContext";
 
 function UserInfoPageContent() {
-  const { isLoading, user } = useGetUser();
+  const { isLoading, user } = useAuth();
 
-  if (isLoading) return <Fallback />;
+  if (isLoading || !user) return <Fallback />;
 
   const initValue = {
     name: user.name,

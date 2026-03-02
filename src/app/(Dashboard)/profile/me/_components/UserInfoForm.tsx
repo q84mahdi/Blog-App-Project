@@ -6,6 +6,15 @@ import toast from "react-hot-toast";
 import * as yup from "yup";
 import useUpdateProfile from "../_hooks/useUpdateProfile";
 
+interface UserInfoFormValues {
+  name: string;
+  email: string;
+}
+
+interface UserInfoFormProps {
+  initValue: UserInfoFormValues;
+}
+
 const schema = yup.object({
   name: yup
     .string()
@@ -15,20 +24,20 @@ const schema = yup.object({
   email: yup.string().required("ایمیل الزامی است").email("ایمیل نامعتبر است"),
 });
 
-function UserInfoForm({ initValue }) {
+function UserInfoForm({ initValue }: UserInfoFormProps) {
   const { isUpdating, updateProfile } = useUpdateProfile();
 
   const {
     register,
     handleSubmit,
     formState: { errors, isDirty },
-  } = useForm({
+  } = useForm<UserInfoFormValues>({
     defaultValues: initValue,
     resolver: yupResolver(schema),
     mode: "onTouched",
   });
 
-  const onSubmit = (values) => {
+  const onSubmit = (values: UserInfoFormValues) => {
     if (!isDirty) return toast.error("لطفا یکی از فیلد ها را تغییر دهید");
 
     updateProfile(values);
