@@ -7,10 +7,16 @@ import { useGetPosts, useGetUserPosts } from "@/hooks/usePosts";
 import Fallback from "@/ui/Fallback";
 import Pagination from "@/ui/Pagination";
 
-function PostTable({ queries, hasPagination = false }) {
-  const { isLoading, posts, totalPages } = useGetPosts(queries);
+interface PostTableProps {
+  queries: string;
+  hasPagination?: boolean;
+}
 
-  if (isLoading) return <Fallback />;
+function PostTable({ queries, hasPagination = false }: PostTableProps) {
+  const { isLoading, data } = useGetPosts(queries);
+  const posts = data?.data;
+
+  if (!posts || isLoading) return <Fallback />;
 
   if (posts.length === 0) return <Empty resourceName="پستی" />;
 
@@ -37,7 +43,7 @@ function PostTable({ queries, hasPagination = false }) {
 
       {hasPagination && posts && posts.length > 0 && (
         <div className="mt-5 flex w-full items-center justify-center">
-          <Pagination totalPages={totalPages} />
+          <Pagination totalPages={data.total} />
         </div>
       )}
     </div>

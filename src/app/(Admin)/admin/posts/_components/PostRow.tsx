@@ -1,8 +1,14 @@
+import { Post } from "@/types/postTypes";
 import Table from "@/ui/Table";
 import dateFormatter from "@/utils/dateFormatter";
 import { toPersianNumbers } from "@/utils/toPersianNumbers";
 import truncateText from "@/utils/truncateText";
 import { DeletePost } from "app/(Dashboard)/profile/posts/_components/Buttons";
+
+interface PostRowProps {
+  post: Post;
+  index: number;
+}
 
 const typeStyles = {
   free: {
@@ -16,7 +22,7 @@ const typeStyles = {
   },
 };
 
-function PostRow({ post, index }) {
+function PostRow({ post, index }: PostRowProps) {
   const { title, category, author, readingTime, createdAt, type } = post;
 
   return (

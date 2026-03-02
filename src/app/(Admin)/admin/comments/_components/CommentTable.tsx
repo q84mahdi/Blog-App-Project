@@ -9,7 +9,7 @@ import Pagination from "@/ui/Pagination";
 
 interface CommentTableProps {
   queries: string;
-  hasPagination: boolean;
+  hasPagination?: boolean;
 }
 
 function CommentTable({ queries, hasPagination = false }: CommentTableProps) {
