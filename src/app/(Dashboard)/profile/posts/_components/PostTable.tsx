@@ -9,7 +9,7 @@ import Pagination from "@/ui/Pagination";
 
 interface PostTableProps {
   queries: string;
-  hasPagination: boolean;
+  hasPagination?: boolean;
 }
 
 function PostTable({ queries, hasPagination = false }: PostTableProps) {

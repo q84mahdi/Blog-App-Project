@@ -239,7 +239,6 @@ function CreatePostForm({ postToEdit = {} as Post }: CreatePostFormProps) {
           render={({ field: { value, onChange, ...rest } }) => (
             <FileInput
               label="انتخاب کاور پست"
-              value={value.name}
               errors={errors}
               onChange={(event) => {
                 const file = event.target.files ? event.target.files[0] : null;
