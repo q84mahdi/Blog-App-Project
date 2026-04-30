@@ -25,8 +25,9 @@ function SortButton({ sortItems = initalSortItems }: SortButtonProps) {
   const pathname = usePathname();
 
   const [open, setOpen] = useState(false);
-  const [sortValue, setSortValue] =
-    useState<(typeof sortItems)[number]["value"]>("desc");
+  const [sortValue, setSortValue] = useState<
+    (typeof sortItems)[number]["value"]
+  >(searchParams.get("order") || "desc");
 
   const ref = useOutsideClick<HTMLDivElement>(() => setOpen(false));
 
