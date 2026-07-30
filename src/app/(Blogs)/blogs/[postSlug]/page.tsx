@@ -18,8 +18,12 @@ interface SinglePostProps {
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const { data: posts } = await getAllPostsApi();
-  return posts.slice(0, 6).map((post) => ({ postSlug: post.slug }));
+  try {
+    const { data: posts } = await getAllPostsApi();
+    return posts.slice(0, 6).map((post) => ({ postSlug: post.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: SinglePostProps) {
