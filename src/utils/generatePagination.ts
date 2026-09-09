@@ -2,8 +2,20 @@ export const generatePagination = (
   currentPage: number,
   totalPages: number,
 ): (number | string)[] => {
-  // If the total number of pages is 7 or less,
-  // display all pages without any ellipsis.
+  if (!Number.isInteger(totalPages) || totalPages < 1) {
+    throw new RangeError("totalPages must be a positive integer");
+  }
+
+  if (
+    !Number.isInteger(currentPage) ||
+    currentPage < 1 ||
+    currentPage > totalPages
+  ) {
+    throw new RangeError(
+      "currentPage must be an integer between 1 and totalPages",
+    );
+  }
+
   if (totalPages <= 7) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }

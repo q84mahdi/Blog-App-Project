@@ -7,10 +7,15 @@ export default function setCookiesOnReq(
   const accessToken = cookies.get("accessToken");
   const refreshToken = cookies.get("refreshToken");
 
+  const cookie = [accessToken, refreshToken]
+    .filter((cookie) => cookie !== undefined)
+    .map((cookie) => `${cookie.name}=${cookie.value}`)
+    .join("; ");
+
   return {
     credentials: "include",
     headers: {
-      Cookie: `${accessToken?.name}=${accessToken?.value}; ${refreshToken?.name}=${refreshToken?.value}`,
+      Cookie: cookie,
     },
   };
 }

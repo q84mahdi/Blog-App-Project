@@ -1,6 +1,12 @@
 import { NextRequest } from "next/server";
+import type { User } from "@/types/authTypes";
 import setCookiesOnReq from "./setCookiesOnReq";
-import { User } from "@/types/authTypes";
+
+type ProfileResponse = {
+  data?: {
+    user?: User;
+  } | null;
+} | null;
 
 export default async function middlewareAuth(
   req: NextRequest,
@@ -14,7 +20,7 @@ export default async function middlewareAuth(
 
   if (!res.ok) return null;
 
-  const { data }: { data?: { user?: User } } = await res.json();
+  const body: ProfileResponse = await res.json();
 
-  return data?.user ?? null;
+  return body?.data?.user ?? null;
 }
