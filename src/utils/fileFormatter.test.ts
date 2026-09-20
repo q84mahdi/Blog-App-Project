@@ -6,19 +6,32 @@ describe("imageUrlToFile", () => {
     vi.restoreAllMocks();
   });
 
+  const createImageResponse = (
+    content: string,
+    mimeType: string,
+    status = 200,
+  ): Response => {
+    const blob = new Blob([content], {
+      type: mimeType,
+    });
+
+    const response = new Response(null, {
+      status,
+    });
+
+    vi.spyOn(response, "blob").mockResolvedValue(blob);
+
+    return response;
+  };
+
   describe("successful requests", () => {
     test("converts an image response to a File", async () => {
       const imgUrl = "https://example.com/images/photo.jpg";
       const imageContent = "fake image content";
 
-      const response = new Response(imageContent, {
-        status: 200,
-        headers: {
-          "Content-Type": "image/jpeg",
-        },
-      });
-
-      vi.spyOn(global, "fetch").mockResolvedValue(response);
+      vi.spyOn(global, "fetch").mockResolvedValue(
+        createImageResponse(imageContent, "image/jpeg"),
+      );
 
       const file = await imageUrlToFile(imgUrl);
 
@@ -41,12 +54,7 @@ describe("imageUrlToFile", () => {
         const imgUrl = `https://example.com/images/${expectedFilename}`;
 
         vi.spyOn(global, "fetch").mockResolvedValue(
-          new Response("image", {
-            status: 200,
-            headers: {
-              "Content-Type": mimeType,
-            },
-          }),
+          createImageResponse("image", mimeType),
         );
 
         const file = await imageUrlToFile(imgUrl);
@@ -61,12 +69,7 @@ describe("imageUrlToFile", () => {
       const imgUrl = "https://example.com/uploads/profile.webp";
 
       vi.spyOn(global, "fetch").mockResolvedValue(
-        new Response("image", {
-          status: 200,
-          headers: {
-            "Content-Type": "image/webp",
-          },
-        }),
+        createImageResponse("image", "image/webp"),
       );
 
       const file = await imageUrlToFile(imgUrl);
@@ -79,12 +82,7 @@ describe("imageUrlToFile", () => {
         "https://example.com/images/photo.jpg?width=500&quality=80";
 
       vi.spyOn(global, "fetch").mockResolvedValue(
-        new Response("image", {
-          status: 200,
-          headers: {
-            "Content-Type": "image/jpeg",
-          },
-        }),
+        createImageResponse("image", "image/jpeg"),
       );
 
       const file = await imageUrlToFile(imgUrl);
@@ -96,12 +94,7 @@ describe("imageUrlToFile", () => {
       const imgUrl = "https://example.com/images/photo.png#preview";
 
       vi.spyOn(global, "fetch").mockResolvedValue(
-        new Response("image", {
-          status: 200,
-          headers: {
-            "Content-Type": "image/png",
-          },
-        }),
+        createImageResponse("image", "image/png"),
       );
 
       const file = await imageUrlToFile(imgUrl);
@@ -113,12 +106,7 @@ describe("imageUrlToFile", () => {
       const imgUrl = "https://example.com/images/";
 
       vi.spyOn(global, "fetch").mockResolvedValue(
-        new Response("image", {
-          status: 200,
-          headers: {
-            "Content-Type": "image/jpeg",
-          },
-        }),
+        createImageResponse("image", "image/jpeg"),
       );
 
       const file = await imageUrlToFile(imgUrl);
@@ -130,12 +118,7 @@ describe("imageUrlToFile", () => {
       const imgUrl = "https://example.com/image.svg";
 
       vi.spyOn(global, "fetch").mockResolvedValue(
-        new Response("<svg></svg>", {
-          status: 200,
-          headers: {
-            "Content-Type": "image/svg+xml",
-          },
-        }),
+        createImageResponse("<svg></svg>", "image/svg+xml"),
       );
 
       const file = await imageUrlToFile(imgUrl);
@@ -148,12 +131,7 @@ describe("imageUrlToFile", () => {
       const content = "image content";
 
       vi.spyOn(global, "fetch").mockResolvedValue(
-        new Response(content, {
-          status: 200,
-          headers: {
-            "Content-Type": "image/png",
-          },
-        }),
+        createImageResponse(content, "image/png"),
       );
 
       const file = await imageUrlToFile(imgUrl);
@@ -172,12 +150,7 @@ describe("imageUrlToFile", () => {
       "throws TypeError when response is not an image: %s",
       async (mimeType) => {
         vi.spyOn(global, "fetch").mockResolvedValue(
-          new Response("not an image", {
-            status: 200,
-            headers: {
-              "Content-Type": mimeType,
-            },
-          }),
+          createImageResponse("not an image", mimeType),
         );
 
         await expect(
@@ -189,13 +162,9 @@ describe("imageUrlToFile", () => {
     );
 
     test("throws TypeError when blob has no MIME type", async () => {
-      const response = new Response(null, { status: 200 });
-
-      vi.spyOn(response, "blob").mockResolvedValue(
-        new Blob(["image"], { type: "" }),
+      vi.spyOn(global, "fetch").mockResolvedValue(
+        createImageResponse("image", ""),
       );
-
-      vi.spyOn(global, "fetch").mockResolvedValue(response);
 
       await expect(imageUrlToFile("https://example.com/image")).rejects.toThrow(
         'Expected an image response, but received "unknown"',
@@ -207,14 +176,9 @@ describe("imageUrlToFile", () => {
     test("calls fetch with the provided URL", async () => {
       const imgUrl = "https://example.com/image.jpg";
 
-      const fetchMock = vi.spyOn(global, "fetch").mockResolvedValue(
-        new Response("image", {
-          status: 200,
-          headers: {
-            "Content-Type": "image/jpeg",
-          },
-        }),
-      );
+      const fetchMock = vi
+        .spyOn(global, "fetch")
+        .mockResolvedValue(createImageResponse("image", "image/jpeg"));
 
       await imageUrlToFile(imgUrl);
 
