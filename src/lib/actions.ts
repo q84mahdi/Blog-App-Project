@@ -17,7 +17,7 @@ export async function createComment(
   const cookiesStore = await cookies();
   const options = setCookiesOnReq(cookiesStore) as AxiosRequestConfig;
 
-  const text = formData.get("text")?.toString();
+  const text = formData.get("text")?.toString().trim();
 
   if (!text) {
     return { message: "", error: "متن نظر الزامی است." };
