@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -32,6 +33,7 @@
     "@types/react": "19.2.17",
     "@types/react-dom": "^19",
     "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/ui": "^4.1.11",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
     "postcss": "^8",
