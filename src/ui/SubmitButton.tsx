@@ -23,7 +23,7 @@ function SubmitButton({
     >
       {children}
 
-      {pending || (isLoading && <SvgLoaderComponent />)}
+      {pending || (isLoading && <SvgLoaderComponent aria-label="loading" />)}
     </Button>
   );
 }

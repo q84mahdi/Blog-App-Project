@@ -125,7 +125,9 @@ function PaginationArrow({
     );
 
   return isDisabled ? (
-    <div className={className}>{icon}</div>
+    <div className={className} data-testid="disabled-arrow">
+      {icon}
+    </div>
   ) : (
     <Link className={className} href={href}>
       {icon}

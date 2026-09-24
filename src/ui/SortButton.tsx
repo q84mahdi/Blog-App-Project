@@ -45,6 +45,7 @@ function SortButton({ sortItems = initalSortItems }: SortButtonProps) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((is) => !is)}
+        aria-label="sort-button"
         className="btn flex items-center gap-x-2 border border-secondary-300 px-4 py-3 text-sm font-normal text-secondary-600 hover:border-primary-900 hover:text-primary-900"
       >
         <FunnelIcon className="h-5 w-5" />
@@ -56,6 +57,7 @@ function SortButton({ sortItems = initalSortItems }: SortButtonProps) {
       </button>
 
       <div
+        aria-label="options"
         className={`${open ? "flex" : "hidden"} absolute left-0 z-50 mt-1 w-full min-w-[150px] flex-col items-center justify-center gap-y-1 rounded-md border border-secondary-300 bg-secondary-0 p-1 xl:-left-4`}
       >
         {sortItems.map((sortItem) => (

@@ -22,6 +22,7 @@ function Drawer({ open, children, onClose }: DrawerProps) {
       <div
         className={`fixed inset-0 z-50 h-screen w-full bg-secondary-800 bg-opacity-30 backdrop-blur-sm ${open ? "block" : "pointer-events-none hidden"}`}
         onClick={onClose}
+        aria-label="backdrop"
       ></div>
 
       {/* Drawer Content */}
