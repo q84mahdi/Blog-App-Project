@@ -8,6 +8,7 @@ interface SelectedCategory extends PaginatedResponse<Category> {
     label: string;
     value: string;
   }[];
+
   transformedCategories: {
     label: string;
     value: string;
@@ -17,14 +18,19 @@ interface SelectedCategory extends PaginatedResponse<Category> {
 export function useGetCategories(queries = "") {
   return useQuery<PaginatedResponse<Category>, Error, SelectedCategory>({
     queryKey: ["categories", queries],
+
     queryFn: () => getAllCategoriesApi(queries),
+
     select: (data) => ({
       ...data,
+
       data: data.data,
+
       categories: data.data.map((category) => ({
         label: category.title,
         value: category._id,
       })),
+
       transformedCategories: data.data.map((category) => ({
         label: category.title,
         value: category.englishTitle,
