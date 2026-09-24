@@ -1,7 +1,6 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, test, expect, vi } from "vitest";
 import ConfirmDelete from "./ConfirmDelete";
-afterEach(cleanup);
 
 test("renders resource confirmation and invokes cancel and confirm handlers", () => {
   const onClose = vi.fn();

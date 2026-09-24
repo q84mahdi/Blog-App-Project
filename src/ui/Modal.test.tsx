@@ -2,8 +2,6 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, test, expect, vi } from "vitest";
 import Modal from "./Modal";
 
-afterEach(cleanup);
-
 test("portals content when open and closes from close button or outside click", async () => {
   const onClose = vi.fn();
 

@@ -11,8 +11,6 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(params),
 }));
 
-afterEach(cleanup);
-
 test("preserves filters and page size in page links and highlights current page", () => {
   render(<Pagination totalPages={7} />);
 

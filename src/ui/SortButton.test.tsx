@@ -9,8 +9,6 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams("page=3&tag=tech"),
 }));
 
-afterEach(cleanup);
-
 test("updates order, preserves existing params, and closes the menu", () => {
   render(<SortButton />);
 

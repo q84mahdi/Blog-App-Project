@@ -1,7 +1,6 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, test, expect, vi } from "vitest";
 import Drawer from "./Drawer";
-afterEach(cleanup);
 
 test("portals children, closes on backdrop, and stops content clicks", async () => {
   const onClose = vi.fn();

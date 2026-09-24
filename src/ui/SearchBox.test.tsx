@@ -10,8 +10,6 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams("page=3&tag=tech"),
 }));
 
-afterEach(cleanup);
-
 test("preserves existing params when setting or removing search", () => {
   render(<SearchBox />);
 
