@@ -58,12 +58,20 @@ function PostInteraction({ post }: PostInteractionProps) {
         <span>{toPersianNumbers(post.commentsCount)}</span>
       </ButtonIcon>
 
-      <ButtonIcon variant="red" onClick={() => likeHandler(post._id)}>
+      <ButtonIcon
+        variant="red"
+        aria-label={post.isLiked ? "حذف پسندیدن" : "پسندیدن"}
+        onClick={() => likeHandler(post._id)}
+      >
         {post.isLiked ? <HeartIconSolid /> : <HeartIcon />}
         <span>{toPersianNumbers(post.likesCount)}</span>
       </ButtonIcon>
 
-      <ButtonIcon variant="primary" onClick={() => bookmarkHandler(post._id)}>
+      <ButtonIcon
+        variant="primary"
+        aria-label={post.isBookmarked ? "حذف نشانک" : "افزودن نشانک"}
+        onClick={() => bookmarkHandler(post._id)}
+      >
         {post.isBookmarked ? <BookmarkIconSolid /> : <BookmarkIcon />}
       </ButtonIcon>
     </div>
