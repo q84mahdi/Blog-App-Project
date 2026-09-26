@@ -1,89 +1,78 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { test, expect, vi } from "vitest";
-import PostInteraction from "./PostInteraction";
-import type { Post } from "@/types/postTypes";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
-const {
-  likeMock,
-  bookmarkMock,
-  refreshMock,
-  invalidateMock,
-  successMock,
-  errorMock,
-} = vi.hoisted(() => ({
-  likeMock: vi.fn(),
-  bookmarkMock: vi.fn(),
+import { getPostByIdApi } from "@/services/postServices";
+import {
+  createQueryWrapper,
+  createTestQueryClient,
+} from "@/test/createTestQueryClient";
+import PostInteraction from "./PostInteraction";
+
+const { refreshMock, successMock, errorMock } = vi.hoisted(() => ({
   refreshMock: vi.fn(),
-  invalidateMock: vi.fn(),
   successMock: vi.fn(),
   errorMock: vi.fn(),
 }));
-vi.mock("@/services/postServices", () => ({
-  likePostApi: likeMock,
-  bookmarkPostApi: bookmarkMock,
-}));
+
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ refresh: refreshMock }),
-}));
-vi.mock("@tanstack/react-query", () => ({
-  useQueryClient: () => ({ invalidateQueries: invalidateMock }),
 }));
 vi.mock("react-hot-toast", () => ({
   default: { success: successMock, error: errorMock },
 }));
 
-const post = {
-  _id: "post-1",
-  title: "Post",
-  slug: "post",
-  category: { _id: "cat", slug: "tech", title: "Tech" },
-  type: "free",
-  briefText: "",
-  text: "",
-  coverImage: "",
-  likesCount: 12,
-  readingTime: 3,
-  tags: [],
-  author: { _id: "user", name: "Alex", avatar: "", avatarUrl: "" },
-  related: [],
-  comments: [],
-  createdAt: "",
-  updatedAt: "",
-  coverImageUrl: "",
-  commentsCount: 4,
-  isLiked: false,
-  isBookmarked: false,
-} satisfies Post;
+describe("PostInteraction", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-test("likes a post and refreshes and invalidates its queries", async () => {
-  likeMock.mockResolvedValue({ message: "Liked" });
+  test("sends like and bookmark requests and reflects handler state", async () => {
+    const post = await getPostByIdApi("post-react");
 
-  render(<PostInteraction post={post} />);
+    render(<PostInteraction post={post} />, {
+      wrapper: createQueryWrapper(createTestQueryClient()),
+    });
 
-  fireEvent.click(screen.getByRole("button", { name: "پسندیدن" }));
+    fireEvent.click(screen.getByRole("button", { name: "حذف پسندیدن" }));
 
-  await waitFor(() => expect(likeMock).toHaveBeenCalledWith("post-1"));
+    await waitFor(async () => {
+      expect(await getPostByIdApi("post-react")).toMatchObject({
+        isLiked: false,
+        likesCount: 11,
+      });
+    });
 
-  expect(successMock).toHaveBeenCalledWith("Liked");
-  expect(refreshMock).toHaveBeenCalledOnce();
-  expect(invalidateMock).toHaveBeenCalledWith({ queryKey: ["posts"] });
-  expect(invalidateMock).toHaveBeenCalledWith({ queryKey: ["post", "post-1"] });
-});
+    expect(successMock).toHaveBeenCalledWith("عملیات با موفقیت انجام شد");
+    expect(refreshMock).toHaveBeenCalledOnce();
 
-test("shows bookmark success and reports API errors", async () => {
-  bookmarkMock.mockResolvedValueOnce({ message: "Saved" });
+    fireEvent.click(screen.getByRole("button", { name: "حذف نشانک" }));
 
-  render(<PostInteraction post={post} />);
+    await waitFor(async () => {
+      expect(await getPostByIdApi("post-react")).toMatchObject({
+        isBookmarked: false,
+      });
+    });
 
-  fireEvent.click(screen.getByRole("button", { name: "افزودن نشانک" }));
+    expect(successMock).toHaveBeenCalledTimes(2);
+    expect(refreshMock).toHaveBeenCalledTimes(2);
+  });
 
-  await waitFor(() => expect(bookmarkMock).toHaveBeenCalledWith("post-1"));
+  test("shows the API error when a like request targets a missing post", async () => {
+    const post = {
+      ...(await getPostByIdApi("post-react")),
+      _id: "missing-post",
+    };
 
-  expect(successMock).toHaveBeenCalledWith("Saved");
+    render(<PostInteraction post={post} />, {
+      wrapper: createQueryWrapper(createTestQueryClient()),
+    });
 
-  likeMock.mockRejectedValueOnce(new Error("Offline"));
+    fireEvent.click(screen.getByRole("button", { name: "حذف پسندیدن" }));
 
-  fireEvent.click(screen.getByRole("button", { name: "پسندیدن" }));
+    await waitFor(() =>
+      expect(errorMock).toHaveBeenCalledWith("پست مورد نظر پیدا نشد"),
+    );
 
-  await waitFor(() => expect(errorMock).toHaveBeenCalledWith("Offline"));
+    expect(refreshMock).not.toHaveBeenCalled();
+  });
 });

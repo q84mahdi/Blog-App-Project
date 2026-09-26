@@ -1,228 +1,93 @@
 import { renderHook, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { http, HttpResponse } from "msw";
+import { describe, expect, test } from "vitest";
 
-import { getUserPostsApi } from "@/services/authServices";
-import { getAllPostsApi, getPostByIdApi } from "@/services/postServices";
-import type { PaginatedResponse } from "@/types/globalTypes";
-import type { Post } from "@/types/postTypes";
+import { server } from "@/mocks/server";
 import {
   createQueryWrapper,
   createTestQueryClient,
 } from "@/test/createTestQueryClient";
-
 import { useGetPostById, useGetPosts, useGetUserPosts } from "./usePosts";
 
-vi.mock("@/services/authServices", () => ({
-  getUserPostsApi: vi.fn(),
-}));
+describe("post query hooks", () => {
+  test("loads seeded posts with server-side search and pagination", async () => {
+    const { result } = renderHook(
+      () => useGetPosts("search=React&page=1&limit=1"),
+      {
+        wrapper: createQueryWrapper(createTestQueryClient()),
+      },
+    );
 
-vi.mock("@/services/postServices", () => ({
-  getAllPostsApi: vi.fn(),
-  getPostByIdApi: vi.fn(),
-}));
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-describe("useGetPosts", () => {
-  const mockPostsResponse: PaginatedResponse<Post> = {
-    data: [],
-    dataCount: 0,
-    total: 0,
-    page: 0,
-    limit: 10,
-  };
-
-  beforeEach(() => {
-    vi.clearAllMocks();
+    expect(result.current.data).toMatchObject({
+      data: [{ _id: "post-react", slug: "getting-started-react" }],
+      dataCount: 1,
+      total: 1,
+      page: 1,
+      limit: 1,
+    });
   });
 
-  test("returns posts when the API request succeeds", async () => {
-    vi.mocked(getAllPostsApi).mockResolvedValue(mockPostsResponse);
-
-    const queryClient = createTestQueryClient();
-
-    const { result } = renderHook(() => useGetPosts(), {
-      wrapper: createQueryWrapper(queryClient),
+  test("loads a post by id with its visible comments and related posts", async () => {
+    const { result } = renderHook(() => useGetPostById("post-react"), {
+      wrapper: createQueryWrapper(createTestQueryClient()),
     });
 
-    await waitFor(() => {
-      expect(result.current.isSuccess).toBe(true);
-    });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data).toEqual(mockPostsResponse);
-    expect(getAllPostsApi).toHaveBeenCalledOnce();
-    expect(getAllPostsApi).toHaveBeenCalledWith("");
+    expect(result.current.data).toMatchObject({
+      _id: "post-react",
+      commentsCount: 1,
+      comments: [{ _id: "comment-react", status: 1 }],
+    });
   });
 
-  test("passes queries to getAllPostsApi", async () => {
-    const queries = "?page=2&limit=10";
-
-    vi.mocked(getAllPostsApi).mockResolvedValue(mockPostsResponse);
-
-    const queryClient = createTestQueryClient();
-
-    const { result } = renderHook(() => useGetPosts(queries), {
-      wrapper: createQueryWrapper(queryClient),
+  test("loads only current-user posts", async () => {
+    const { result } = renderHook(() => useGetUserPosts("page=1&limit=1"), {
+      wrapper: createQueryWrapper(createTestQueryClient()),
     });
 
-    await waitFor(() => {
-      expect(result.current.isSuccess).toBe(true);
-    });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(getAllPostsApi).toHaveBeenCalledOnce();
-    expect(getAllPostsApi).toHaveBeenCalledWith(queries);
+    expect(result.current.data).toMatchObject({
+      data: [{ _id: "post-next" }],
+      dataCount: 1,
+      page: 1,
+      limit: 1,
+    });
   });
 
-  test("enters an error state when getAllPostsApi fails", async () => {
-    const error = new Error("Failed to fetch posts");
-
-    vi.mocked(getAllPostsApi).mockRejectedValue(error);
-
-    const queryClient = createTestQueryClient();
-
-    const { result } = renderHook(() => useGetPosts(), {
-      wrapper: createQueryWrapper(queryClient),
+  test("surfaces a not-found response from the post endpoint", async () => {
+    const { result } = renderHook(() => useGetPostById("missing-post"), {
+      wrapper: createQueryWrapper(createTestQueryClient()),
     });
 
-    await waitFor(() => {
-      expect(result.current.isError).toBe(true);
-    });
+    await waitFor(() => expect(result.current.isError).toBe(true));
 
-    expect(result.current.error).toBe(error);
+    expect(result.current.error).toEqual(new Error("پست مورد نظر پیدا نشد"));
     expect(result.current.data).toBeUndefined();
   });
-});
 
-describe("useGetUserPosts", () => {
-  const mockUserPostsResponse: PaginatedResponse<Post> = {
-    data: [],
-    dataCount: 0,
-    total: 0,
-    page: 0,
-    limit: 10,
-  };
+  test("surfaces server failures for the post list", async () => {
+    const errorMessage = "Post service unavailable";
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+    server.use(
+      http.get("*/post/list", () =>
+        HttpResponse.json(
+          { statusCode: 503, message: errorMessage },
+          { status: 503 },
+        ),
+      ),
+    );
 
-  test("returns user posts when the API request succeeds", async () => {
-    vi.mocked(getUserPostsApi).mockResolvedValue(mockUserPostsResponse);
-
-    const queryClient = createTestQueryClient();
-
-    const { result } = renderHook(() => useGetUserPosts(), {
-      wrapper: createQueryWrapper(queryClient),
+    const { result } = renderHook(() => useGetPosts(), {
+      wrapper: createQueryWrapper(createTestQueryClient()),
     });
 
-    await waitFor(() => {
-      expect(result.current.isSuccess).toBe(true);
-    });
+    await waitFor(() => expect(result.current.isError).toBe(true));
 
-    expect(result.current.data).toEqual(mockUserPostsResponse);
-    expect(getUserPostsApi).toHaveBeenCalledOnce();
-    expect(getUserPostsApi).toHaveBeenCalledWith("");
-  });
-
-  test("passes queries to getUserPostsApi", async () => {
-    const queries = "?page=2&limit=10";
-
-    vi.mocked(getUserPostsApi).mockResolvedValue(mockUserPostsResponse);
-
-    const queryClient = createTestQueryClient();
-
-    const { result } = renderHook(() => useGetUserPosts(queries), {
-      wrapper: createQueryWrapper(queryClient),
-    });
-
-    await waitFor(() => {
-      expect(result.current.isSuccess).toBe(true);
-    });
-
-    expect(getUserPostsApi).toHaveBeenCalledOnce();
-    expect(getUserPostsApi).toHaveBeenCalledWith(queries);
-  });
-
-  test("enters an error state when getUserPostsApi fails", async () => {
-    const error = new Error("Failed to fetch user posts");
-
-    vi.mocked(getUserPostsApi).mockRejectedValue(error);
-
-    const queryClient = createTestQueryClient();
-
-    const { result } = renderHook(() => useGetUserPosts(), {
-      wrapper: createQueryWrapper(queryClient),
-    });
-
-    await waitFor(() => {
-      expect(result.current.isError).toBe(true);
-    });
-
-    expect(result.current.error).toBe(error);
-    expect(result.current.data).toBeUndefined();
-  });
-});
-
-describe("useGetPostById", () => {
-  const mockPost = {
-    _id: "post-123",
-  } as Post;
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  test("returns the post when the API request succeeds", async () => {
-    vi.mocked(getPostByIdApi).mockResolvedValue(mockPost);
-
-    const queryClient = createTestQueryClient();
-
-    const { result } = renderHook(() => useGetPostById("post-123"), {
-      wrapper: createQueryWrapper(queryClient),
-    });
-
-    await waitFor(() => {
-      expect(result.current.isSuccess).toBe(true);
-    });
-
-    expect(result.current.data).toEqual(mockPost);
-    expect(getPostByIdApi).toHaveBeenCalledOnce();
-    expect(getPostByIdApi).toHaveBeenCalledWith("post-123");
-  });
-
-  test("passes the postId to getPostByIdApi", async () => {
-    const postId = "post-456";
-
-    vi.mocked(getPostByIdApi).mockResolvedValue(mockPost);
-
-    const queryClient = createTestQueryClient();
-
-    const { result } = renderHook(() => useGetPostById(postId), {
-      wrapper: createQueryWrapper(queryClient),
-    });
-
-    await waitFor(() => {
-      expect(result.current.isSuccess).toBe(true);
-    });
-
-    expect(getPostByIdApi).toHaveBeenCalledOnce();
-    expect(getPostByIdApi).toHaveBeenCalledWith(postId);
-  });
-
-  test("enters an error state when getPostByIdApi fails", async () => {
-    const error = new Error("Failed to fetch post");
-
-    vi.mocked(getPostByIdApi).mockRejectedValue(error);
-
-    const queryClient = createTestQueryClient();
-
-    const { result } = renderHook(() => useGetPostById("post-123"), {
-      wrapper: createQueryWrapper(queryClient),
-    });
-
-    await waitFor(() => {
-      expect(result.current.isError).toBe(true);
-    });
-
-    expect(result.current.error).toBe(error);
+    expect(result.current.error).toEqual(new Error(errorMessage));
     expect(result.current.data).toBeUndefined();
   });
 });

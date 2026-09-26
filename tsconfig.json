@@ -39,6 +39,9 @@
       "@/lib/*": [
         "lib/*"
       ],
+      "@/mocks/*": [
+        "mocks/*"
+      ],
       "@/providers/*": [
         "providers/*"
       ],
