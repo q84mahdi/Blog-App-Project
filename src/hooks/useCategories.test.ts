@@ -31,7 +31,7 @@ describe("useGetCategories", () => {
         { label: "نکست جی‌اس", value: "Next.js" },
       ],
       dataCount: 3,
-      total: 3,
+      total: 2,
       page: 1,
       limit: 2,
     });

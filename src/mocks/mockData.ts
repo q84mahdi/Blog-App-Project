@@ -169,6 +169,7 @@ export const db = {
   categories: structuredClone(categoryFixtures),
   comments: structuredClone(commentFixtures),
 };
+
 export function resetMockData() {
   db.users = structuredClone(seedUsers);
   db.currentUser = db.users[0];
@@ -176,14 +177,6 @@ export function resetMockData() {
   db.categories = structuredClone(categoryFixtures);
   db.comments = structuredClone(commentFixtures);
 }
-
-export const ok = <T>(data: T, status = 200) =>
-  HttpResponse.json<ApiResponse<T>>({ statusCode: status, data }, { status });
-export const error = (message: string, status: number) =>
-  HttpResponse.json({ statusCode: status, message }, { status });
-
-export const empty = (message = "عملیات با موفقیت انجام شد") => ({ message });
-export const clone = <T>(value: T): T => structuredClone(value);
 
 export function paginate<T>(items: T[], url: URL): PaginatedResponse<T> {
   const page = Math.max(1, Number(url.searchParams.get("page")) || 1);
@@ -194,12 +187,11 @@ export function paginate<T>(items: T[], url: URL): PaginatedResponse<T> {
   return {
     data: clone(items.slice(start, start + limit)),
     dataCount: items.length,
-    total: items.length,
+    total: Math.ceil(items.length / limit),
     page,
     limit,
   };
 }
-
 export function filterPosts(items: Post[], url: URL) {
   let result = [...items];
 
@@ -230,11 +222,9 @@ export function filterPosts(items: Post[], url: URL) {
 
   return result;
 }
-
 export function findPost(id: string) {
   return db.posts.find((post) => post._id === id || post.slug === id);
 }
-
 export function postResponse(post: Post) {
   const related = db.posts
     .filter(
@@ -269,7 +259,6 @@ export const requestData = async (
     return {};
   }
 };
-
 export const formData = async (request: Request) => {
   try {
     return await request.formData();
@@ -277,3 +266,11 @@ export const formData = async (request: Request) => {
     return new FormData();
   }
 };
+
+export const ok = <T>(data: T, status = 200) =>
+  HttpResponse.json<ApiResponse<T>>({ statusCode: status, data }, { status });
+export const error = (message: string, status: number) =>
+  HttpResponse.json({ statusCode: status, message }, { status });
+
+export const empty = (message = "عملیات با موفقیت انجام شد") => ({ message });
+export const clone = <T>(value: T): T => structuredClone(value);
