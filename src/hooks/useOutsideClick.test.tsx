@@ -1,4 +1,4 @@
-import { render, renderHook, screen } from "@testing-library/react";
+import { render, renderHook, screen } from "@/test/test-utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import useOutsideClick from "./useOutsideClick";

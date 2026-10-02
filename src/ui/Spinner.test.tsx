@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render } from "@/test/test-utils";
 import { test, expect } from "vitest";
 import Spinner from "./Spinner";
 

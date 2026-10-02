@@ -1,4 +1,4 @@
-import { renderHook } from "@testing-library/react";
+import { renderHook } from "@/test/test-utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import useMoveBack from "./useMoveBack";

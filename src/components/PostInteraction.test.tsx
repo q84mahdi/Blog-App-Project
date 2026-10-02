@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@/test/test-utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { getPostByIdApi } from "@/services/postServices";

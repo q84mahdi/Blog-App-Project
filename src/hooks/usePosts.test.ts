@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react";
+import { renderHook, waitFor } from "@/test/test-utils";
 import { http, HttpResponse } from "msw";
 import { describe, expect, test } from "vitest";
 

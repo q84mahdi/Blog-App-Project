@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "@/test/test-utils";
 import { test, expect, vi } from "vitest";
 import Header from "./Header";
 

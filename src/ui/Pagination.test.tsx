@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@/test/test-utils";
 import { afterEach, test, expect, vi } from "vitest";
 import Pagination from "./Pagination";
 

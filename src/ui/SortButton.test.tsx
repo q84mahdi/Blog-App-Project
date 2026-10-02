@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@/test/test-utils";
 import { afterEach, test, expect, vi } from "vitest";
 import SortButton from "./SortButton";
 

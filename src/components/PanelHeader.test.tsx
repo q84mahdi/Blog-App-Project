@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@/test/test-utils";
 import { test, expect, vi } from "vitest";
 import PanelHeader from "./PanelHeader";
 
