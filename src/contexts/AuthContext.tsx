@@ -50,7 +50,7 @@ type Action =
   | RejectedAction;
 
 // Data initialization
-const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const Initial_State: AuthStateType = {
   user: null,
@@ -221,9 +221,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
 
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
 
   return context;
 }

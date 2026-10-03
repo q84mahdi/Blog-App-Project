@@ -2,9 +2,7 @@
 
 import {
   createContext,
-  Dispatch,
   ReactNode,
-  SetStateAction,
   useContext,
   useEffect,
   useState,
@@ -17,9 +15,7 @@ interface DarkModeContextType {
 }
 
 // Data initialization
-const DarkModeContext = createContext<DarkModeContextType>(
-  {} as DarkModeContextType,
-);
+const DarkModeContext = createContext<DarkModeContextType | undefined>(undefined);
 
 // Provider Component
 export function DarkModeProvider({ children }: { children: ReactNode }) {
@@ -61,7 +57,7 @@ export function DarkModeProvider({ children }: { children: ReactNode }) {
 export function useDarkMode() {
   const context = useContext(DarkModeContext);
 
-  if (context === undefined)
+  if (!context)
     throw new Error("DarkModeContext was used outside of DarkModeProvider");
 
   return context;
