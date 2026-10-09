@@ -125,7 +125,8 @@ export const authHandlers = [
     const data = await formData(request);
     const image = data.get("avatar") ?? data.get("file");
 
-    if (!(image instanceof File))
+    // FormData may yield a File from a different runtime realm under Vitest/MSW.
+    if (!image || typeof image === "string" || !("name" in image))
       return error("فایل تصویر ارسال نشده است", 400);
 
     db.currentUser.avatar = image.name;

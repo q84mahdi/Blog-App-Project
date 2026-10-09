@@ -1,6 +1,8 @@
 import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { middleware } from "../middleware";
+import { http, HttpResponse } from "msw";
+import { server } from "@/mocks/server";
 
 const { authForRequest } = vi.hoisted(() => ({ authForRequest: vi.fn() }));
 vi.mock("@/utils/middlewareAuth", () => ({ default: authForRequest }));
@@ -207,5 +209,85 @@ describe("integrated site flows", () => {
 
     authForRequest.mockResolvedValueOnce({ _id: "user-admin" });
     expect(await middleware(profileRequest())).toBeUndefined();
+  });
+
+  test("reports duplicate registration, duplicate category, and missing-resource failures", async () => {
+    await expect(
+      auth.signupApi({
+        name: "Duplicate Account",
+        email: "admin@example.com",
+        password: "password123",
+      }),
+    ).rejects.toThrow("این ایمیل قبلا ثبت شده است");
+
+    await expect(
+      categories.createCategoryApi({
+        title: "دسته تکراری",
+        englishTitle: "React",
+        description: "A duplicate category description.",
+      }),
+    ).rejects.toThrow("این دسته‌بندی قبلا ثبت شده است");
+
+    await expect(posts.getPostBySlugApi("missing-post")).rejects.toThrow(
+      "پست مورد نظر پیدا نشد",
+    );
+    await expect(comments.deleteCommentApi("missing-comment")).rejects.toThrow(
+      "نظر پیدا نشد",
+    );
+  });
+
+  test("updates profile and avatar and rejects an email already owned by another user", async () => {
+    await auth.updateUserProfile({
+      name: "Updated Admin",
+      email: "admin@example.com",
+    });
+    expect((await auth.getUserApi()).user.name).toBe("Updated Admin");
+
+    await expect(
+      auth.updateUserProfile({
+        name: "Updated Admin",
+        email: "author@example.com",
+      }),
+    ).rejects.toThrow("این ایمیل قبلا ثبت شده است");
+
+    const avatar = new FormData();
+    avatar.set(
+      "avatar",
+      new Blob(["avatar"], { type: "image/png" }),
+      "profile.png",
+    );
+    await auth.updateUserAvatar(avatar);
+    const updatedUser = (await auth.getUserApi()).user;
+    expect(updatedUser.avatar).toBeTruthy();
+    expect(updatedUser.avatarUrl).toContain("images.unsplash.com");
+  });
+
+  test("updates a comment status, filters admin lists, and handles empty results", async () => {
+    await comments.changeStatusCommentApi({
+      commentId: "comment-react",
+      data: { status: 2 },
+    });
+    const visibleComments = await comments.getAllCommentsApi("");
+    expect(visibleComments.data).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ _id: "comment-react", status: 2 }),
+      ]),
+    );
+
+    const firstUserPage = await auth.getAllUsersApi("page=1&limit=1");
+    expect(firstUserPage.data).toHaveLength(1);
+    expect(firstUserPage.total).toBe(2);
+    const emptyPosts = await posts.getAllPostsApi("search=does-not-exist");
+    expect(emptyPosts.data).toHaveLength(0);
+  });
+
+  test("surfaces API outages as actionable service errors", async () => {
+    server.use(
+      http.get("*/post/list", () =>
+        HttpResponse.json({ message: "temporary outage" }, { status: 503 }),
+      ),
+    );
+
+    await expect(posts.getAllPostsApi("")).rejects.toThrow("temporary outage");
   });
 });
